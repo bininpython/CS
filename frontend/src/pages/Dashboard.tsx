@@ -1,11 +1,12 @@
 import React from 'react';
+import { Users, Factory, Palmtree, ClipboardList, Moon, Sun, Sunrise, Filter, Plus } from 'lucide-react';
 import { useApp } from '../App';
 
 const statCards = [
-  { label: 'COLABORADORES', value: 0, sub: '0 ativos', icon: '👥' },
-  { label: 'POSTOS DE TRABALHO', value: 0, sub: 'cadastrados', icon: '🏭' },
-  { label: 'EM FÉRIAS HOJE', value: 0, sub: 'colaboradores', icon: '🏖️' },
-  { label: 'FOLGAS PENDENTES', value: 0, sub: 'aguardando aprovação', icon: '📋' },
+  { label: 'COLABORADORES', value: 0, sub: '0 ativos', icon: Users },
+  { label: 'POSTOS DE TRABALHO', value: 0, sub: 'cadastrados', icon: Factory },
+  { label: 'EM FÉRIAS HOJE', value: 0, sub: 'colaboradores', icon: Palmtree },
+  { label: 'FOLGAS PENDENTES', value: 0, sub: 'aguardando aprovação', icon: ClipboardList },
 ];
 
 const Dashboard: React.FC = () => {
@@ -21,26 +22,29 @@ const Dashboard: React.FC = () => {
           <p className="text-sm text-muted mt-0.5">Visão geral da disponibilidade e distribuição operacional das equipes.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
-            🔽 Filtros
+          <button className="flex items-center gap-2 text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
+            <Filter size={16} /> Filtros
           </button>
-          <button className="text-sm text-white bg-purple px-4 py-2 hover:bg-purple/90 transition-colors font-medium">
-            + Novo Registro
+          <button className="flex items-center gap-2 text-sm text-white bg-purple px-4 py-2 hover:bg-purple/90 transition-colors font-medium">
+            <Plus size={16} /> Novo Registro
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {statCards.map((card) => (
-          <div key={card.label} className="bg-white border border-border p-5">
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-semibold text-muted uppercase tracking-wider">{card.label}</p>
-              <span className="text-lg">{card.icon}</span>
+        {statCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} className="bg-white border border-border p-5">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-[10px] font-semibold text-muted uppercase tracking-wider">{card.label}</p>
+                <Icon size={20} className="text-purple" />
+              </div>
+              <p className="text-3xl font-bold text-foreground">{card.value}</p>
+              <p className="text-xs text-muted mt-1">{card.sub}</p>
             </div>
-            <p className="text-3xl font-bold text-foreground">{card.value}</p>
-            <p className="text-xs text-muted mt-1">{card.sub}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -71,20 +75,25 @@ const Dashboard: React.FC = () => {
           <h2 className="text-sm font-semibold text-foreground mb-4">Cobertura por Turno</h2>
           <div className="space-y-4">
             {[
-              { emoji: '🌙', label: 'Turno Noite (TN)', pct: 0 },
-              { emoji: '☀️', label: 'Turno Manhã (TM)', pct: 0 },
-              { emoji: '🌅', label: 'Turno Tarde (TT)', pct: 0 },
-            ].map((t) => (
-              <div key={t.label}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-muted">{t.emoji} {t.label}</span>
-                  <span className="text-xs font-medium text-foreground">{t.pct} alocados</span>
+              { icon: Moon, label: 'Turno Noite (TN)', pct: 0 },
+              { icon: Sun, label: 'Turno Manhã (TM)', pct: 0 },
+              { icon: Sunrise, label: 'Turno Tarde (TT)', pct: 0 },
+            ].map((t) => {
+              const TurnoIcon = t.icon;
+              return (
+                <div key={t.label}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs text-muted flex items-center gap-2">
+                      <TurnoIcon size={14} className="text-purple" /> {t.label}
+                    </span>
+                    <span className="text-xs font-medium text-foreground">{t.pct} alocados</span>
+                  </div>
+                  <div className="w-full h-2 bg-background">
+                    <div className="h-2 bg-purple" style={{ width: `${t.pct}%` }}></div>
+                  </div>
                 </div>
-                <div className="w-full h-2 bg-background">
-                  <div className="h-2 bg-purple" style={{ width: `${t.pct}%` }}></div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
