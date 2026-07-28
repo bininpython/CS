@@ -103,15 +103,15 @@ const ColaboradorPostos: React.FC = () => {
                     })}
                     {/* Linha FOLGA */}
                     <tr className="border-t-4 border-black hover:bg-gray-50 transition-colors">
-                      <td className="px-2 py-3 border-r-2 border-black bg-blue-100">
-                        <span className="text-xs font-bold text-blue-900 italic uppercase tracking-wider">FOLGA</span>
+                      <td className="px-2 py-3 border-r-2 border-black bg-purple-100">
+                        <span className="text-xs font-bold text-purple-900 italic uppercase tracking-wider">FOLGA</span>
                       </td>
                       {[1, 2, 3, 4].map(folgaId => {
                         const text = getColaboradorText(equipamento.id, 'FOLGA', folgaId);
                         return (
-                          <td key={folgaId} className="p-2 border-r-2 border-black last:border-r-0 h-full bg-blue-50 text-center align-middle whitespace-pre-wrap">
+                          <td key={folgaId} className="p-2 border-r-2 border-black last:border-r-0 h-full bg-purple-50 text-center align-middle whitespace-pre-wrap">
                             {text ? (
-                              <span className="text-xs font-bold text-blue-900 uppercase tracking-wider">{text}</span>
+                              <span className="text-xs font-bold text-purple-900 uppercase tracking-wider">{text}</span>
                             ) : (
                               <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">-</span>
                             )}

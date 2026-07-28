@@ -160,15 +160,15 @@ const PostosDeTrabalho: React.FC = () => {
                     })}
                     {/* Linha FOLGA */}
                     <tr className="border-t-4 border-black hover:bg-gray-50 transition-colors">
-                      <td className="px-2 py-2 border-r-2 border-black bg-blue-100">
-                        <span className="text-xs font-bold text-blue-900 italic uppercase tracking-wider">FOLGA</span>
+                      <td className="px-2 py-2 border-r-2 border-black bg-purple-100">
+                        <span className="text-xs font-bold text-purple-900 italic uppercase tracking-wider">FOLGA</span>
                       </td>
                       {[1, 2, 3, 4].map(folgaId => (
-                        <td key={folgaId} className="p-0 border-r-2 border-black last:border-r-0 h-full bg-blue-50">
+                        <td key={folgaId} className="p-0 border-r-2 border-black last:border-r-0 h-full bg-purple-50">
                           <textarea
                             value={getColaboradorText(equipamento.id, 'FOLGA', folgaId)}
                             onChange={(e) => handleAlocacaoChange(equipamento.id, 'FOLGA', folgaId, e.target.value)}
-                            className="w-full h-full min-h-[60px] p-2 text-xs font-bold uppercase tracking-wider text-center resize-none outline-none focus:bg-blue-100 bg-transparent text-blue-900"
+                            className="w-full h-full min-h-[60px] p-2 text-xs font-bold uppercase tracking-wider text-center resize-none outline-none focus:bg-purple-100 bg-transparent text-purple-900"
                             placeholder="Nomes em folga"
                           />
                         </td>
