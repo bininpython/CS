@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Download, Plus, X, Clock, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../App';
 
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
-const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-const YEAR = 2026;
+export const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+export const YEAR = 2026;
 
 // Lista de Colaboradores baseada na aba Colaboradores
-const COLABORADORES = [
+export const COLABORADORES = [
   { id: '1', nome: 'LUCAS DOS SANTOS MORAIS', equipamento: 'RB4', numeroFolga: 2 },
   { id: '2', nome: 'FLEWDSON CAMPOS DOS SANTOS', equipamento: 'RB4', numeroFolga: 4 },
   { id: '3', nome: 'WILDSON JUNIO RODRIGUES DINIZ', equipamento: 'RB4', numeroFolga: 3 },
@@ -43,7 +43,7 @@ interface FolgaManual {
 }
 
 // Retorna o dia do ano (1 a 365/366)
-const getDayOfYear = (date: Date) => {
+export const getDayOfYear = (date: Date) => {
   const start = new Date(date.getFullYear(), 0, 0);
   const diff = (date.getTime() - start.getTime()) + ((start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000);
   const oneDay = 1000 * 60 * 60 * 24;
@@ -51,7 +51,7 @@ const getDayOfYear = (date: Date) => {
 };
 
 // Lógica Inteligente de Escala 6x2 (Válida para todo 2026)
-const getSequenceForDay = (date: Date): number => {
+export const getSequenceForDay = (date: Date): number => {
   const dayOfYear = getDayOfYear(date);
   const mod = ((dayOfYear - 4) % 8 + 8) % 8;
   if (mod === 0 || mod === 1) return 3; // Seq 3
@@ -61,7 +61,7 @@ const getSequenceForDay = (date: Date): number => {
   return 0;
 };
 
-const getSequenceColor = (seq: number) => {
+export const getSequenceColor = (seq: number) => {
   switch (seq) {
     case 1: return 'bg-blue-100 text-blue-800 border-blue-300';
     case 2: return 'bg-orange-100 text-orange-800 border-orange-300';
