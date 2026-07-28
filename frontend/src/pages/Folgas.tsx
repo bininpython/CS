@@ -331,7 +331,7 @@ const Folgas: React.FC = () => {
                 <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px] pr-1 custom-scrollbar">
                   {folgas.map((folga, idx) => {
                     const colorClass = folga.isAuto 
-                      ? getSequenceColor(folga.numeroFolga)
+                      ? getSequenceColor(Number(folga.numeroFolga))
                       : 'bg-yellow-400 text-black border-yellow-600 border-2 font-extrabold';
 
                     return (
