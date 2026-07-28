@@ -1,165 +1,195 @@
-import React from 'react';
-import { Download, CheckCircle, XCircle } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Download } from 'lucide-react';
 
-const PESOS_MESES = [
-  { mes: 'JANEIRO', peso: 1 },
-  { mes: 'FEVEREIRO', peso: 2 },
-  { mes: 'MARÇO', peso: 3 },
-  { mes: 'ABRIL', peso: 6 },
-  { mes: 'MAIO', peso: 8 },
-  { mes: 'JUNHO', peso: 8 },
-  { mes: 'JULHO', peso: 1 },
-  { mes: 'AGOSTO', peso: 10 },
-  { mes: 'SETEMBRO', peso: 10 },
-  { mes: 'OUTUBRO', peso: 10 },
-  { mes: 'NOVEMBRO', peso: 10 },
-  { mes: 'DEZEMBRO', peso: 3 },
-];
+interface HistoricoAno {
+  mes: string;
+  pontos: number;
+}
 
-const EQUIPAMENTOS = [
-  { 
-    id: 'RB1', 
-    nome: 'RECOZIMENTO FINAL I', 
-    solicitacoes: [
-      { id: 1, colaborador: 'Ana Souza', inicio: '10/01/2026', fim: '25/01/2026', dias: 15, peso: 1, status: 'Pendente' }
-    ] 
-  },
-  { 
-    id: 'LE1', 
-    nome: 'LAMINADOR DE ENCRUAMENTO 1', 
-    solicitacoes: [] 
-  },
-  { 
-    id: 'RB4', 
-    nome: 'RECOZIMENTO FINAL IV', 
-    solicitacoes: [
-      { id: 2, colaborador: 'Pedro Costa', inicio: '05/08/2026', fim: '04/09/2026', dias: 30, peso: 10, status: 'Aprovado' }
-    ] 
-  },
+interface OpcaoFerias {
+  mes: string;
+  color: 'orange' | 'blue' | 'yellow' | 'white';
+}
+
+interface Empregado {
+  r3: string;
+  nome: string;
+  periodoAquisitivo: string;
+  hist2023: HistoricoAno;
+  hist2024: HistoricoAno;
+  hist2025: HistoricoAno;
+  opcoes: [OpcaoFerias, OpcaoFerias, OpcaoFerias];
+  dataFerias: string;
+  observacao: string;
+}
+
+const DADOS_MOCK: Empregado[] = [
+  { r3: '1009599', nome: 'RODRIGO OLIVEIRA MOREIRA', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'MARÇO', pontos: 3 }, hist2024: { mes: 'MARÇO', pontos: 3 }, hist2025: { mes: 'MARÇO', pontos: 3 }, opcoes: [{ mes: 'Março', color: 'orange' }, { mes: 'Abril', color: 'white' }, { mes: 'Maio', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1008593', nome: 'TALES JACOB DE SOUZA', periodoAquisitivo: '07/04/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'OUT', pontos: 10 }, hist2025: { mes: 'OUT', pontos: 10 }, opcoes: [{ mes: 'outubro', color: 'blue' }, { mes: 'novembro', color: 'white' }, { mes: 'dezembro', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1011006', nome: 'ABNER LUCAS ALMEIDA PASSOS', periodoAquisitivo: '21/09/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'JAN', pontos: 1 }, hist2025: { mes: 'DEZ', pontos: 3 }, opcoes: [{ mes: 'out', color: 'white' }, { mes: 'nov', color: 'white' }, { mes: 'dez', color: 'orange' }], dataFerias: '', observacao: 'Falta marcar SAP' },
+  { r3: '1008459', nome: 'MARCONE FERREIRA GONÇALVES', periodoAquisitivo: '06/03/2026', hist2023: { mes: 'MAIO', pontos: 8 }, hist2024: { mes: 'JUNHO', pontos: 8 }, hist2025: { mes: 'MAIO', pontos: 8 }, opcoes: [{ mes: 'Maio', color: 'blue' }, { mes: 'Abril', color: 'white' }, { mes: 'Junho', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1006816', nome: 'RAFAEL HENRIQUE LINHARES', periodoAquisitivo: '25/03/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'ABRIL', pontos: 6 }, hist2025: { mes: 'JULHO', pontos: 1 }, opcoes: [{ mes: 'AGOSTO', color: 'white' }, { mes: 'SETEMBRO', color: 'orange' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1004388', nome: 'WILLIAM JUNIO SIMÕES', periodoAquisitivo: '02/01/2026', hist2023: { mes: 'ABR', pontos: 6 }, hist2024: { mes: 'JULHO', pontos: 1 }, hist2025: { mes: 'SET', pontos: 10 }, opcoes: [{ mes: 'Abril', color: 'yellow' }, { mes: 'Out', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: 'Falta marcar SAP' },
+  { r3: '1009594', nome: 'ISRAEL LUCAS FREITAS NUNES', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'AGO', pontos: 10 }, hist2025: { mes: 'AGOSTO', pontos: 10 }, opcoes: [{ mes: 'Agosto', color: 'orange' }, { mes: 'setembro', color: 'white' }, { mes: 'outubro', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1007478', nome: 'LUCAS SILVA DE ASSIS CARVALHO', periodoAquisitivo: '28/08/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'Jan', color: 'blue' }, { mes: 'Fev', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: '' },
+  { r3: '1010784', nome: 'DAVI FERREIRA LIMA', periodoAquisitivo: '08/05/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'SET', pontos: 10 }, hist2025: { mes: 'NOV', pontos: 10 }, opcoes: [{ mes: 'Novembro', color: 'yellow' }, { mes: 'Dezembro', color: 'white' }, { mes: 'Janeiro', color: 'white' }], dataFerias: '', observacao: '' },
 ];
 
 const Ferias: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'RB1' | 'LE1' | 'RB4'>('RB1');
+
+  // Cálculo de totais e prioridade
+  const colaboradoresCalculados = useMemo(() => {
+    // Passo 1: Calcular totais
+    let dados = DADOS_MOCK.map(emp => {
+      const total = emp.hist2023.pontos + emp.hist2024.pontos + emp.hist2025.pontos;
+      return { ...emp, total };
+    });
+
+    // Passo 2: Ordernar temporariamente por total (descendente) para determinar prioridades
+    // NOTA: No Excel da imagem original a ordem visual não é ordenada pela prioridade, 
+    // então a gente calcula a prioridade baseada nos valores e mantém a ordem original da lista.
+    const sortedByTotal = [...dados].sort((a, b) => b.total - a.total);
+    
+    return dados.map(emp => {
+      // Prioridade = posição no ranking ordenado + 1
+      const prioridade = sortedByTotal.findIndex(s => s.total === emp.total && s.r3 === emp.r3) + 1;
+      return { ...emp, prioridade };
+    });
+  }, []);
+
+  const getColorClass = (color: string) => {
+    switch (color) {
+      case 'orange': return 'bg-[#FF9900] text-white';
+      case 'blue': return 'bg-[#3b82f6] text-white';
+      case 'yellow': return 'bg-[#ffea00] text-black font-bold';
+      default: return 'bg-white text-foreground';
+    }
+  };
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
+    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden">
+      <div className="flex items-center justify-between mb-6 flex-shrink-0">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">Solicitações de Férias</h1>
-          <p className="text-sm text-muted mt-0.5">Avaliação e acompanhamento de férias por equipamento.</p>
+          <h1 className="text-xl font-semibold text-foreground">Banco de Dados - Histórico de Férias</h1>
+          <p className="text-sm text-muted mt-0.5">Acompanhamento e priorização baseada em peso de histórico</p>
         </div>
         <div className="flex items-center gap-3">
           <button className="flex items-center gap-2 text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
-            <Download size={16} /> Baixar Relatório (PDF)
+            <Download size={16} /> Exportar Excel
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Tabela de Pesos (Sidebar) */}
-        <div className="lg:col-span-1">
-          <div className="bg-white border border-border">
-            <div className="px-4 py-3 border-b border-border bg-gray-50">
-              <h2 className="text-sm font-bold text-foreground">Tabela de Pesos</h2>
-              <p className="text-[10px] text-muted">Peso do mês para férias</p>
-            </div>
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left px-4 py-2 font-semibold text-muted uppercase tracking-wider border-r border-border w-2/3">Mês</th>
-                  <th className="text-center px-4 py-2 font-semibold text-muted uppercase tracking-wider w-1/3">Peso</th>
-                </tr>
-              </thead>
-              <tbody>
-                {PESOS_MESES.map((item) => (
-                  <tr key={item.mes} className="border-b border-border last:border-0 hover:bg-gray-50">
-                    <td className="px-4 py-2 font-medium text-foreground border-r border-border">{item.mes}</td>
-                    <td className={`px-4 py-2 text-center font-bold ${item.peso >= 8 ? 'text-red-600' : item.peso >= 3 ? 'text-warning' : 'text-success'}`}>
-                      {item.peso}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* Abas de Equipamentos */}
+      <div className="bg-white border border-border mb-4 flex items-center overflow-x-auto flex-shrink-0">
+        {['RB1', 'LE1', 'RB4'].map((equip) => (
+          <button
+            key={equip}
+            onClick={() => setActiveTab(equip as any)}
+            className={`px-8 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+              activeTab === equip
+                ? 'border-b-purple text-purple bg-purpleLight/30'
+                : 'border-b-transparent text-muted hover:text-foreground hover:bg-background'
+            }`}
+          >
+            EQUIPE {equip}
+          </button>
+        ))}
+      </div>
 
-        {/* Tabelas de Equipamentos */}
-        <div className="lg:col-span-3 space-y-6">
-          {EQUIPAMENTOS.map((equipamento) => (
-            <div key={equipamento.id} className="bg-white border border-border">
-              <div className="px-5 py-3 border-b border-border bg-gray-50 flex items-center justify-between">
-                <h2 className="text-sm font-bold text-foreground">{equipamento.id} - {equipamento.nome}</h2>
-                <span className="text-xs text-muted">
-                  {equipamento.solicitacoes.length} {equipamento.solicitacoes.length === 1 ? 'solicitação' : 'solicitações'}
-                </span>
-              </div>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Colaborador</th>
-                      <th className="text-left px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Período</th>
-                      <th className="text-center px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Dias</th>
-                      <th className="text-center px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Peso</th>
-                      <th className="text-left px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Status</th>
-                      <th className="text-right px-5 py-2.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {equipamento.solicitacoes.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="text-center py-8">
-                          <p className="text-sm text-muted">Nenhuma solicitação pendente para este equipamento.</p>
-                        </td>
-                      </tr>
-                    ) : (
-                      equipamento.solicitacoes.map((sol) => (
-                        <tr key={sol.id} className="border-b border-border last:border-0 hover:bg-gray-50 transition-colors">
-                          <td className="px-5 py-3 text-sm text-foreground font-medium whitespace-nowrap">
-                            {sol.colaborador}
-                          </td>
-                          <td className="px-5 py-3 text-xs text-muted whitespace-nowrap">
-                            {sol.inicio} a {sol.fim}
-                          </td>
-                          <td className="px-5 py-3 text-sm text-center">
-                            {sol.dias}
-                          </td>
-                          <td className="px-5 py-3 text-sm text-center font-bold">
-                            <span className={sol.peso >= 8 ? 'text-red-600' : sol.peso >= 3 ? 'text-warning' : 'text-success'}>
-                              {sol.peso}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3 text-sm">
-                            <span className={`px-2 py-1 text-[10px] font-medium uppercase ${
-                              sol.status === 'Aprovado' 
-                                ? 'bg-success/10 text-success' 
-                                : sol.status === 'Recusado'
-                                ? 'bg-red-100 text-red-600'
-                                : 'bg-warning/10 text-warning'
-                            }`}>
-                              {sol.status}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3 text-right">
-                            {sol.status === 'Pendente' && (
-                              <div className="flex items-center justify-end gap-2">
-                                <button className="text-success hover:bg-success/10 p-1.5 rounded transition-colors" title="Aprovar">
-                                  <CheckCircle size={18} />
-                                </button>
-                                <button className="text-red-600 hover:bg-red-50 p-1.5 rounded transition-colors" title="Recusar">
-                                  <XCircle size={18} />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          ))}
+      <div className="bg-white border border-border w-full flex-1 overflow-hidden flex flex-col">
+        <div className="overflow-x-auto w-full max-w-full">
+          <table className="text-[10px] sm:text-xs border-collapse min-w-[1200px] w-full bg-white">
+            <thead className="bg-gray-200">
+              {/* ROW 1 */}
+              <tr className="border-b border-gray-400">
+                <th colSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-gray-300">Equipe {activeTab}</th>
+                <th rowSpan={3} className="border-r border-gray-400 font-semibold px-4 py-1 text-center bg-gray-200 align-middle">Período<br/>Aquisitivo</th>
+                <th colSpan={6} className="border-r border-gray-400 font-bold px-2 py-1 text-center bg-gray-300 text-sm">Banco de dados - Histórico</th>
+                <th rowSpan={3} className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-gray-200 align-middle">Total de<br/>pontos</th>
+                <th rowSpan={3} className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-gray-200 align-middle">Prioridade</th>
+                <th colSpan={3} className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-gray-300">Opções para próxima férias</th>
+                <th rowSpan={3} className="border-r border-gray-400 font-semibold px-4 py-1 text-center bg-gray-200 align-middle">Data das férias</th>
+                <th rowSpan={3} className="border-r border-gray-400 font-semibold px-4 py-1 text-center bg-gray-200 align-middle">Observação</th>
+              </tr>
+
+              {/* ROW 2 */}
+              <tr className="border-b border-gray-400">
+                <th rowSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center">R3</th>
+                <th rowSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center min-w-[200px]">Empregado</th>
+                <th colSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center">2023</th>
+                <th colSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center">2024</th>
+                <th colSpan={2} className="border-r border-gray-400 font-semibold px-2 py-1 text-center">2025</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">1ª opção</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">2ª opção</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">3ª opção</th>
+              </tr>
+
+              {/* ROW 3 */}
+              <tr className="border-b border-gray-400">
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Mês</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Pontos</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Mês</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Pontos</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Mês</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center">Pontos</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-[#FF9900]/20">Mês</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-gray-300">Mês</th>
+                <th className="border-r border-gray-400 font-semibold px-2 py-1 text-center bg-[#FF9900]/20">Mês</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              {activeTab !== 'RB1' ? (
+                <tr>
+                  <td colSpan={15} className="text-center py-10 text-muted font-medium bg-white">
+                    Nenhum colaborador registrado na Equipe {activeTab} ainda.
+                  </td>
+                </tr>
+              ) : (
+                colaboradoresCalculados.map((emp, i) => (
+                  <tr key={i} className="border-b border-gray-300 hover:bg-gray-50 transition-colors">
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center text-foreground font-medium">{emp.r3}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-left text-foreground font-medium">{emp.nome}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-bold bg-[#00FF00] text-black">
+                      {emp.periodoAquisitivo}
+                    </td>
+                    
+                    {/* 2023 */}
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center uppercase">{emp.hist2023.mes}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-medium">{emp.hist2023.pontos}</td>
+                    
+                    {/* 2024 */}
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center uppercase">{emp.hist2024.mes}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-medium">{emp.hist2024.pontos}</td>
+
+                    {/* 2025 */}
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center uppercase">{emp.hist2025.mes}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-medium">{emp.hist2025.pontos}</td>
+
+                    {/* Totais */}
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-bold text-foreground">
+                      {emp.total}
+                    </td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center font-bold text-lg">
+                      {emp.prioridade}º
+                    </td>
+
+                    {/* Opcoes */}
+                    {emp.opcoes.map((opt, idx) => (
+                      <td key={idx} className={`border-r border-gray-300 px-2 py-1.5 text-center font-medium ${getColorClass(opt.color)}`}>
+                        {opt.mes}
+                      </td>
+                    ))}
+
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-center">{emp.dataFerias}</td>
+                    <td className="border-r border-gray-300 px-2 py-1.5 text-left text-xs">{emp.observacao}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
