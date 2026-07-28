@@ -8,7 +8,7 @@ interface HistoricoAno {
 
 interface OpcaoFerias {
   mes: string;
-  color: 'orange' | 'blue' | 'yellow' | 'white';
+  color: 'orange' | 'blue' | 'yellow' | 'pink' | 'white';
 }
 
 interface Empregado {
@@ -21,34 +21,50 @@ interface Empregado {
   opcoes: [OpcaoFerias, OpcaoFerias, OpcaoFerias];
   dataFerias: string;
   observacao: string;
+  equipe: 'RB1' | 'LE1' | 'RB4';
 }
 
 const DADOS_MOCK: Empregado[] = [
-  { r3: '1009599', nome: 'RODRIGO OLIVEIRA MOREIRA', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'MARÇO', pontos: 3 }, hist2024: { mes: 'MARÇO', pontos: 3 }, hist2025: { mes: 'MARÇO', pontos: 3 }, opcoes: [{ mes: 'Março', color: 'orange' }, { mes: 'Abril', color: 'white' }, { mes: 'Maio', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1008593', nome: 'TALES JACOB DE SOUZA', periodoAquisitivo: '07/04/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'OUT', pontos: 10 }, hist2025: { mes: 'OUT', pontos: 10 }, opcoes: [{ mes: 'outubro', color: 'blue' }, { mes: 'novembro', color: 'white' }, { mes: 'dezembro', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1011006', nome: 'ABNER LUCAS ALMEIDA PASSOS', periodoAquisitivo: '21/09/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'JAN', pontos: 1 }, hist2025: { mes: 'DEZ', pontos: 3 }, opcoes: [{ mes: 'out', color: 'white' }, { mes: 'nov', color: 'white' }, { mes: 'dez', color: 'orange' }], dataFerias: '', observacao: 'Falta marcar SAP' },
-  { r3: '1008459', nome: 'MARCONE FERREIRA GONÇALVES', periodoAquisitivo: '06/03/2026', hist2023: { mes: 'MAIO', pontos: 8 }, hist2024: { mes: 'JUNHO', pontos: 8 }, hist2025: { mes: 'MAIO', pontos: 8 }, opcoes: [{ mes: 'Maio', color: 'blue' }, { mes: 'Abril', color: 'white' }, { mes: 'Junho', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1006816', nome: 'RAFAEL HENRIQUE LINHARES', periodoAquisitivo: '25/03/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'ABRIL', pontos: 6 }, hist2025: { mes: 'JULHO', pontos: 1 }, opcoes: [{ mes: 'AGOSTO', color: 'white' }, { mes: 'SETEMBRO', color: 'orange' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1004388', nome: 'WILLIAM JUNIO SIMÕES', periodoAquisitivo: '02/01/2026', hist2023: { mes: 'ABR', pontos: 6 }, hist2024: { mes: 'JULHO', pontos: 1 }, hist2025: { mes: 'SET', pontos: 10 }, opcoes: [{ mes: 'Abril', color: 'yellow' }, { mes: 'Out', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: 'Falta marcar SAP' },
-  { r3: '1009594', nome: 'ISRAEL LUCAS FREITAS NUNES', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'AGO', pontos: 10 }, hist2025: { mes: 'AGOSTO', pontos: 10 }, opcoes: [{ mes: 'Agosto', color: 'orange' }, { mes: 'setembro', color: 'white' }, { mes: 'outubro', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1007478', nome: 'LUCAS SILVA DE ASSIS CARVALHO', periodoAquisitivo: '28/08/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'Jan', color: 'blue' }, { mes: 'Fev', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: '' },
-  { r3: '1010784', nome: 'DAVI FERREIRA LIMA', periodoAquisitivo: '08/05/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'SET', pontos: 10 }, hist2025: { mes: 'NOV', pontos: 10 }, opcoes: [{ mes: 'Novembro', color: 'yellow' }, { mes: 'Dezembro', color: 'white' }, { mes: 'Janeiro', color: 'white' }], dataFerias: '', observacao: '' },
+  // RB1
+  { r3: '1009599', nome: 'RODRIGO OLIVEIRA MOREIRA', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'MARÇO', pontos: 3 }, hist2024: { mes: 'MARÇO', pontos: 3 }, hist2025: { mes: 'MARÇO', pontos: 3 }, opcoes: [{ mes: 'Março', color: 'orange' }, { mes: 'Abril', color: 'white' }, { mes: 'Maio', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1008593', nome: 'TALES JACOB DE SOUZA', periodoAquisitivo: '07/04/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'OUT', pontos: 10 }, hist2025: { mes: 'OUT', pontos: 10 }, opcoes: [{ mes: 'outubro', color: 'blue' }, { mes: 'novembro', color: 'white' }, { mes: 'dezembro', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1011006', nome: 'ABNER LUCAS ALMEIDA PASSOS', periodoAquisitivo: '21/09/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'JAN', pontos: 1 }, hist2025: { mes: 'DEZ', pontos: 3 }, opcoes: [{ mes: 'out', color: 'white' }, { mes: 'nov', color: 'white' }, { mes: 'dez', color: 'orange' }], dataFerias: '', observacao: 'Falta marcar SAP', equipe: 'RB1' },
+  { r3: '1008459', nome: 'MARCONE FERREIRA GONÇALVES', periodoAquisitivo: '06/03/2026', hist2023: { mes: 'MAIO', pontos: 8 }, hist2024: { mes: 'JUNHO', pontos: 8 }, hist2025: { mes: 'MAIO', pontos: 8 }, opcoes: [{ mes: 'Maio', color: 'blue' }, { mes: 'Abril', color: 'white' }, { mes: 'Junho', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1006816', nome: 'RAFAEL HENRIQUE LINHARES', periodoAquisitivo: '25/03/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'ABRIL', pontos: 6 }, hist2025: { mes: 'JULHO', pontos: 1 }, opcoes: [{ mes: 'AGOSTO', color: 'white' }, { mes: 'SETEMBRO', color: 'orange' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1004388', nome: 'WILLIAM JUNIO SIMÕES', periodoAquisitivo: '02/01/2026', hist2023: { mes: 'ABR', pontos: 6 }, hist2024: { mes: 'JULHO', pontos: 1 }, hist2025: { mes: 'SET', pontos: 10 }, opcoes: [{ mes: 'Abril', color: 'yellow' }, { mes: 'Out', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: 'Falta marcar SAP', equipe: 'RB1' },
+  { r3: '1009594', nome: 'ISRAEL LUCAS FREITAS NUNES', periodoAquisitivo: '16/11/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'AGO', pontos: 10 }, hist2025: { mes: 'AGOSTO', pontos: 10 }, opcoes: [{ mes: 'Agosto', color: 'orange' }, { mes: 'setembro', color: 'white' }, { mes: 'outubro', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1007478', nome: 'LUCAS SILVA DE ASSIS CARVALHO', periodoAquisitivo: '28/08/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'Jan', color: 'blue' }, { mes: 'Fev', color: 'white' }, { mes: 'Dez', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+  { r3: '1010784', nome: 'DAVI FERREIRA LIMA', periodoAquisitivo: '08/05/2026', hist2023: { mes: '--', pontos: 0 }, hist2024: { mes: 'SET', pontos: 10 }, hist2025: { mes: 'NOV', pontos: 10 }, opcoes: [{ mes: 'Novembro', color: 'yellow' }, { mes: 'Dezembro', color: 'white' }, { mes: 'Janeiro', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB1' },
+
+  // RB4 (Dados do print RB3 mas com a tabulacao RB4 que o usuario definiu anteriormente)
+  { r3: '1009384', nome: 'LUCAS DOS SANTOS MORAIS', periodoAquisitivo: '18/11/2025', hist2023: { mes: 'JUNHO', pontos: 8 }, hist2024: { mes: 'JULHO', pontos: 1 }, hist2025: { mes: 'MAIO', pontos: 8 }, opcoes: [{ mes: 'NOVEMBRO', color: 'white' }, { mes: 'MAIO', color: 'yellow' }, { mes: 'JUNHO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1004162', nome: 'FLEWDSON CAMPOS DOS SANTOS', periodoAquisitivo: '15/03/2025', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'FEV', color: 'orange' }, { mes: '', color: 'white' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1007155', nome: 'WILDSON JUNIOR RODRIGUES DINIZ', periodoAquisitivo: '11/06/2026', hist2023: { mes: 'AGOSTO', pontos: 10 }, hist2024: { mes: 'AGOSTO', pontos: 10 }, hist2025: { mes: 'AGOSTO', pontos: 10 }, opcoes: [{ mes: 'OUTUBRO', color: 'blue' }, { mes: 'MARÇO', color: 'white' }, { mes: 'FEVEREIRO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1009716', nome: 'TULYO FERREIRA SILVA NESCAU', periodoAquisitivo: '10/02/2026', hist2023: { mes: 'ABR', pontos: 6 }, hist2024: { mes: 'ABR', pontos: 6 }, hist2025: { mes: 'MARÇO', pontos: 3 }, opcoes: [{ mes: 'MARÇO', color: 'yellow' }, { mes: 'FEVEREIRO', color: 'white' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1003960', nome: 'ANDRE WILIAN DA SILVA', periodoAquisitivo: '03/08/2025', hist2023: { mes: 'JAN', pontos: 1 }, hist2024: { mes: 'JAN', pontos: 1 }, hist2025: { mes: 'JAN', pontos: 1 }, opcoes: [{ mes: 'JANEIRO', color: 'blue' }, { mes: 'FEVEREIRO', color: 'white' }, { mes: 'MARÇO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1010020', nome: 'MARCO TULIO RAMOS COSTA', periodoAquisitivo: '08/09/2026', hist2023: { mes: 'OUT', pontos: 10 }, hist2024: { mes: 'NOV', pontos: 10 }, hist2025: { mes: 'DEZ', pontos: 3 }, opcoes: [{ mes: 'JANEIRO', color: 'white' }, { mes: 'MARÇO', color: 'white' }, { mes: 'FEVEREIRO', color: 'white' }], dataFerias: '', observacao: 'PERIODO AQUISITIVO PARA 2027', equipe: 'RB4' },
+  { r3: '1008511', nome: 'ÍTALO MIRANDA DE RAMOS', periodoAquisitivo: '08/05/2025', hist2023: { mes: 'MAIO', pontos: 8 }, hist2024: { mes: 'DEZ', pontos: 3 }, hist2025: { mes: 'JULHO', pontos: 1 }, opcoes: [{ mes: 'DEZEMBRO', color: 'orange' }, { mes: 'JULHO', color: 'white' }, { mes: 'SETEMBRO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+  { r3: '1011066', nome: 'JACQUELINE SILVA GARCIA', periodoAquisitivo: '20/11/2025', hist2023: { mes: '-', pontos: 0 }, hist2024: { mes: '-', pontos: 0 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'JUNHO', color: 'pink' }, { mes: 'MAIO', color: 'white' }, { mes: 'ABRIL', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
+
+  // LE1
+  { r3: '1011284', nome: 'VITTORIO ANGELO SERGIO', periodoAquisitivo: '19/04/2026', hist2023: { mes: '---', pontos: 0 }, hist2024: { mes: '---', pontos: 0 }, hist2025: { mes: 'OUT', pontos: 10 }, opcoes: [{ mes: 'ABRIL', color: 'white' }, { mes: 'SETEMBRO', color: 'orange' }, { mes: 'OUTUBRO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'LE1' },
+  { r3: '1003864', nome: 'RODRIGO CUNHA SOUZA', periodoAquisitivo: '17/02/2025', hist2023: { mes: 'MARÇO', pontos: 3 }, hist2024: { mes: 'MARÇO', pontos: 3 }, hist2025: { mes: '---', pontos: 0 }, opcoes: [{ mes: '', color: 'white' }, { mes: '', color: 'white' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'LE1' },
+  { r3: '1011468', nome: 'FERNANDA MORAIS VIRTUOSO', periodoAquisitivo: '02/09/2025', hist2023: { mes: '---', pontos: 0 }, hist2024: { mes: '---', pontos: 0 }, hist2025: { mes: '---', pontos: 0 }, opcoes: [{ mes: 'JANEIRO', color: 'pink' }, { mes: 'FEVEREIRO', color: 'white' }, { mes: 'MARÇO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'LE1' },
+  { r3: '1010125', nome: 'ALEXANDRE SILVA RODRIGUES', periodoAquisitivo: '02/01/2026', hist2023: { mes: 'FEV', pontos: 2 }, hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'FEV', color: 'yellow' }, { mes: 'ABRIL', color: 'white' }, { mes: 'MAIO', color: 'white' }], dataFerias: '', observacao: '', equipe: 'LE1' },
 ];
 
 const Ferias: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'RB1' | 'LE1' | 'RB4'>('RB1');
 
-  // Cálculo de totais e prioridade
+  // Cálculo de totais e prioridade por equipe
   const colaboradoresCalculados = useMemo(() => {
-    // Passo 1: Calcular totais
-    let dados = DADOS_MOCK.map(emp => {
+    // Passo 1: Filtrar por equipe e calcular totais
+    let dados = DADOS_MOCK.filter(emp => emp.equipe === activeTab).map(emp => {
       const total = emp.hist2023.pontos + emp.hist2024.pontos + emp.hist2025.pontos;
       return { ...emp, total };
     });
 
     // Passo 2: Ordernar temporariamente por total (descendente) para determinar prioridades
-    // NOTA: No Excel da imagem original a ordem visual não é ordenada pela prioridade, 
-    // então a gente calcula a prioridade baseada nos valores e mantém a ordem original da lista.
     const sortedByTotal = [...dados].sort((a, b) => b.total - a.total);
     
     return dados.map(emp => {
@@ -56,13 +72,14 @@ const Ferias: React.FC = () => {
       const prioridade = sortedByTotal.findIndex(s => s.total === emp.total && s.r3 === emp.r3) + 1;
       return { ...emp, prioridade };
     });
-  }, []);
+  }, [activeTab]);
 
   const getColorClass = (color: string) => {
     switch (color) {
       case 'orange': return 'bg-[#FF9900] text-white';
       case 'blue': return 'bg-[#3b82f6] text-white';
       case 'yellow': return 'bg-[#ffea00] text-black font-bold';
+      case 'pink': return 'bg-[#ffcdd2] text-black'; // Representando a cor rosa/vermelho claro
       default: return 'bg-white text-foreground';
     }
   };
@@ -141,7 +158,7 @@ const Ferias: React.FC = () => {
             </thead>
             
             <tbody>
-              {activeTab !== 'RB1' ? (
+              {colaboradoresCalculados.length === 0 ? (
                 <tr>
                   <td colSpan={15} className="text-center py-10 text-muted font-medium bg-white">
                     Nenhum colaborador registrado na Equipe {activeTab} ainda.
