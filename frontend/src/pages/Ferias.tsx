@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Download, Edit2, Plus, X, Save } from 'lucide-react';
+import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock } from 'lucide-react';
+import { useApp } from '../App';
 
 interface HistoricoAno {
   mes: string;
@@ -27,7 +28,7 @@ interface Empregado {
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
-const INITIAL_DATA: Empregado[] = [
+export const INITIAL_DATA: Empregado[] = [
   // RB4
   { id: generateId(), r3: '1009384', nome: 'LUCAS DOS SANTOS MORAIS', periodoAquisitivo: '17/11/2026', hist2024: { mes: 'JUL', pontos: 1 }, hist2025: { mes: 'MAI', pontos: 8 }, hist2026: { mes: 'MAI', pontos: 8 }, opcoes: [{ mes: 'MAI', color: 'white' }, { mes: 'JUL', color: 'white' }, { mes: 'OUT', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
   { id: generateId(), r3: '1004162', nome: 'FLEWDSON CAMPOS DOS SANTOS', periodoAquisitivo: '14/03/2026', hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, hist2026: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'FEV', color: 'white' }, { mes: '', color: 'white' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
@@ -69,13 +70,36 @@ const EMPTY_EMPREGADO = (equipe: 'RB1'|'LE1'|'RB4'): Empregado => ({
   equipe,
 });
 
-const MESES = ['', 'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
+export const MESES = ['', 'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 
 const Ferias: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'RB1' | 'LE1' | 'RB4'>('RB1');
   const [dados, setDados] = useState<Empregado[]>(INITIAL_DATA);
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState<Empregado | null>(null);
+  
+  const { solicitacoesFerias, setSolicitacoesFerias } = useApp();
+
+  const handleAprovarFerias = (idSolicitacao: string) => {
+    // 1. Atualizar status na solicitacao
+    setSolicitacoesFerias(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
+    
+    // 2. Procurar na tabela se esse colaborador existe, e pintar o mes de laranja
+    const sol = solicitacoesFerias.find(s => s.id === idSolicitacao);
+    if (sol) {
+      const mesName = MESES[sol.mes];
+      setDados(prev => prev.map(emp => {
+        // Simple match by name (as this is a mock)
+        if (emp.nome.toUpperCase() === sol.nome.toUpperCase()) {
+          // Add as option 1 and color orange
+          const newOpcoes = [...emp.opcoes] as [OpcaoFerias, OpcaoFerias, OpcaoFerias];
+          newOpcoes[0] = { mes: mesName, color: 'orange' };
+          return { ...emp, opcoes: newOpcoes, dataFerias: `Aprovado para ${mesName}` };
+        }
+        return emp;
+      }));
+    }
+  };
 
   const colaboradoresCalculados = useMemo(() => {
     let tabData = dados.filter(emp => emp.equipe === activeTab).map(emp => {
@@ -173,6 +197,33 @@ const Ferias: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Solicitações Pendentes */}
+      {solicitacoesFerias.filter(s => s.status === 'Pendente').length > 0 && (
+        <div className="mb-8 bg-orange-50 border-2 border-orange-500 p-4 shadow-[4px_4px_0px_0px_rgba(249,115,22,1)]">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="text-orange-600" />
+            <h2 className="text-sm font-bold text-orange-800 uppercase tracking-widest">Solicitações Pendentes ({solicitacoesFerias.filter(s => s.status === 'Pendente').length})</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {solicitacoesFerias.filter(s => s.status === 'Pendente').map(sol => (
+              <div key={sol.id} className="bg-white border-2 border-orange-300 p-4 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-bold text-black uppercase">{sol.nome}</h3>
+                  <p className="text-xs text-gray-600 font-bold uppercase mt-1">{sol.equipamento} | {sol.turno}</p>
+                  <p className="text-sm text-black font-bold uppercase mt-3 bg-orange-100 p-2 inline-block">Mês Solicitado: {MESES[sol.mes]}</p>
+                </div>
+                <button 
+                  onClick={() => handleAprovarFerias(sol.id)}
+                  className="mt-4 w-full bg-[#FF9900] text-white font-bold uppercase tracking-widest py-2 flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors"
+                >
+                  <CheckCircle2 size={16} /> Aprovar Férias
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Abas de Equipamentos - Design Limpo Minimalista */}
       <div className="flex items-center gap-0 mb-6 border-b-2 border-black flex-shrink-0">

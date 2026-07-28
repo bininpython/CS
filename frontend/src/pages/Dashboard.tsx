@@ -2,17 +2,17 @@ import React from 'react';
 import { Users, Factory, Palmtree, ClipboardList, Moon, Sun, Sunrise, Filter, Plus } from 'lucide-react';
 import { useApp } from '../App';
 
-const statCards = [
-  { label: 'COLABORADORES', value: 0, sub: '0 ativos', icon: Users },
-  { label: 'POSTOS DE TRABALHO', value: 0, sub: 'cadastrados', icon: Factory },
-  { label: 'EM FÉRIAS HOJE', value: 0, sub: 'colaboradores', icon: Palmtree },
-  { label: 'FOLGAS PENDENTES', value: 0, sub: 'aguardando aprovação', icon: ClipboardList },
-];
-
 const Dashboard: React.FC = () => {
-  const { supervisor } = useApp();
+  const { supervisor, solicitacoesFerias, solicitacoesFolga } = useApp();
 
   if (!supervisor) return null;
+
+  const statCards = [
+    { label: 'COLABORADORES', value: 20, sub: 'ativos', icon: Users },
+    { label: 'POSTOS DE TRABALHO', value: 13, sub: 'cadastrados', icon: Factory },
+    { label: 'FÉRIAS PENDENTES', value: solicitacoesFerias.filter(s => s.status === 'Pendente').length, sub: 'aguardando aprovação', icon: Palmtree },
+    { label: 'FOLGAS PENDENTES', value: solicitacoesFolga.filter(s => s.status === 'Pendente').length, sub: 'aguardando aprovação', icon: ClipboardList },
+  ];
 
   return (
     <div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Download, Plus, X } from 'lucide-react';
+import { Download, Plus, X, Clock, CheckCircle2 } from 'lucide-react';
+import { useApp } from '../App';
 
 const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -75,6 +76,31 @@ const Folgas: React.FC = () => {
   const [folgasManuais, setFolgasManuais] = useState<FolgaManual[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const { solicitacoesFolga, setSolicitacoesFolga } = useApp();
+
+  const handleAprovarFolga = (idSolicitacao: string) => {
+    // 1. Atualizar status na solicitacao
+    setSolicitacoesFolga(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
+    
+    // 2. Procurar na base de colaboradores para injetar na folgaManual local
+    const sol = solicitacoesFolga.find(s => s.id === idSolicitacao);
+    if (sol) {
+      // Find the collaborator in COLABORADORES array by matching name, to get its ID.
+      // This is necessary because in ColaboradorFolgas we just mocked the colabId.
+      const colab = COLABORADORES.find(c => c.nome.toUpperCase() === sol.nome.toUpperCase());
+      const cId = colab ? colab.id : ('mock-' + sol.id);
+
+      const newFolga: FolgaManual = {
+        id: sol.id,
+        colaboradorId: cId,
+        data: sol.data,
+        tipo: 'Folga Solicitada (Aprovado)',
+        motivo: sol.motivo
+      };
+      setFolgasManuais(prev => [...prev, newFolga]);
+    }
+  };
 
   // Form State
   const [formColaborador, setFormColaborador] = useState('');
@@ -164,6 +190,34 @@ const Folgas: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Solicitações Pendentes */}
+      {solicitacoesFolga.filter(s => s.status === 'Pendente').length > 0 && (
+        <div className="mb-6 bg-orange-50 border-2 border-orange-500 p-4 shadow-[4px_4px_0px_0px_rgba(249,115,22,1)] flex-shrink-0">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="text-orange-600" />
+            <h2 className="text-sm font-bold text-orange-800 uppercase tracking-widest">Solicitações Pendentes ({solicitacoesFolga.filter(s => s.status === 'Pendente').length})</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {solicitacoesFolga.filter(s => s.status === 'Pendente').map(sol => (
+              <div key={sol.id} className="bg-white border-2 border-orange-300 p-4 flex flex-col justify-between">
+                <div>
+                  <h3 className="font-bold text-black uppercase">{sol.nome}</h3>
+                  <p className="text-xs text-gray-600 font-bold uppercase mt-1">{sol.equipamento} | {sol.turno}</p>
+                  <p className="text-sm text-black font-bold uppercase mt-3 bg-orange-100 p-2 inline-block">Data: {sol.data.split('-').reverse().join('/')}</p>
+                  <p className="text-[10px] text-gray-500 mt-2 line-clamp-2 uppercase">Motivo: {sol.motivo}</p>
+                </div>
+                <button 
+                  onClick={() => handleAprovarFolga(sol.id)}
+                  className="mt-4 w-full bg-[#FF9900] text-white font-bold uppercase tracking-widest py-2 flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors"
+                >
+                  <CheckCircle2 size={16} /> Aprovar Folga
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Legenda das Folgas */}
       <div className="flex items-center gap-6 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black">

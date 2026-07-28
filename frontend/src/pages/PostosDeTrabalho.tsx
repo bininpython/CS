@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Save } from 'lucide-react';
+import { useApp } from '../App';
 
 const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -57,10 +58,10 @@ interface AlocacaoState {
 
 const PostosDeTrabalho: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(7); // Agosto default
-  const [alocacoes, setAlocacoes] = useState<AlocacaoState>({});
+  const { alocacoesPostos, setAlocacoesPostos } = useApp();
 
   const handleAlocacaoChange = (equipamentoId: string, postoNome: string, colaboradorId: string) => {
-    setAlocacoes(prev => {
+    setAlocacoesPostos(prev => {
       const monthData = prev[selectedMonth] || {};
       const equipData = monthData[equipamentoId] || {};
       
@@ -78,7 +79,7 @@ const PostosDeTrabalho: React.FC = () => {
   };
 
   const getColaboradorId = (equipamentoId: string, postoNome: string) => {
-    return alocacoes[selectedMonth]?.[equipamentoId]?.[postoNome] || '';
+    return alocacoesPostos[selectedMonth]?.[equipamentoId]?.[postoNome] || '';
   };
 
   // Função para retornar os colaboradores ordenados (pessoas do próprio equipamento primeiro)
