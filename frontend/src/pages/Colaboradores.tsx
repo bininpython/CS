@@ -47,26 +47,26 @@ const Colaboradores: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative">
-      <div className="flex items-center justify-between mb-6 flex-shrink-0">
+      <div className="flex items-center justify-between mb-8 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-black uppercase tracking-wide">Colaboradores</h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">Gestão de equipe, status e datas comemorativas</p>
+          <h1 className="text-2xl font-bold text-black uppercase tracking-widest">Colaboradores</h1>
+          <p className="text-sm text-gray-500 mt-1 font-bold uppercase tracking-widest">Gestão de equipe e status</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+        <div className="flex items-center gap-4">
+          <div className="relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
             <input 
               type="text" 
-              placeholder="Buscar colaborador..." 
+              placeholder="BUSCAR COLABORADOR..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border-2 border-black pl-10 pr-4 py-2 text-sm font-medium outline-none focus:bg-gray-50 w-64"
+              className="border-2 border-black pl-10 pr-4 py-3 text-xs font-bold uppercase tracking-widest outline-none focus:bg-gray-50 w-72 text-black placeholder-gray-400"
             />
           </div>
-          <button className="flex items-center gap-2 text-sm text-black border-2 border-black bg-white px-4 py-2 hover:bg-gray-100 transition-colors font-bold uppercase tracking-wider">
+          <button className="flex items-center gap-2 text-xs font-bold text-black bg-white border-2 border-black px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Download size={16} /> Exportar
           </button>
-          <button className="flex items-center gap-2 text-sm text-white bg-black px-4 py-2 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider">
+          <button className="flex items-center gap-2 text-xs font-bold text-white bg-black border-2 border-black px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <UserPlus size={16} /> Novo
           </button>
         </div>
