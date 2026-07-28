@@ -7,28 +7,6 @@ const MONTH_NAMES = [
   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
-const COLABORADORES = [
-  { id: '1', nome: 'LUCAS DOS SANTOS MORAIS', equipamento: 'RB4' },
-  { id: '2', nome: 'FLEWDSON CAMPOS DOS SANTOS', equipamento: 'RB4' },
-  { id: '3', nome: 'WILDSON JUNIO RODRIGUES DINIZ', equipamento: 'RB4' },
-  { id: '4', nome: 'TULYO FERREIRA SILVA NESCAU', equipamento: 'RB4' },
-  { id: '5', nome: 'JOÃO PAULO', equipamento: 'RB4' },
-  { id: '6', nome: 'ÍTALO MIRANDA DE RAMOS', equipamento: 'RB4' },
-  { id: '7', nome: 'ABNER LUCAS ALMEIDA PASSOS', equipamento: 'RB1' },
-  { id: '8', nome: 'TALES JACOB DE SOUZA', equipamento: 'RB1' },
-  { id: '9', nome: 'LETICIA DO CARMO FIALHO', equipamento: 'OUTRO' },
-  { id: '10', nome: 'RAFAEL HENRIQUE OLIVEIRA LINHARES', equipamento: 'RB1' },
-  { id: '11', nome: 'WILLIAM JUNIO SIMÕES', equipamento: 'LE1' },
-  { id: '12', nome: 'ISRAEL LUCAS FREITAS NUNES', equipamento: 'RB1' },
-  { id: '13', nome: 'DAVI FERREIRA LIMA', equipamento: 'RB1' },
-  { id: '14', nome: 'KELLEN YARA VIEIRA', equipamento: 'RB4' },
-  { id: '15', nome: 'RODRIGO CUNHA SOUZA', equipamento: 'LE1' },
-  { id: '16', nome: 'FERNANDA MORAIS VIRTUOSO', equipamento: 'LE1' },
-  { id: '17', nome: 'AMOS RAFAEL MARTINS DE ALMEIDA', equipamento: 'RB1' },
-  { id: '18', nome: 'JACQUELINE SILVA GARCIA', equipamento: 'RB4' },
-  { id: '19', nome: 'ALEXANDRE SILVA RODRIGUES', equipamento: 'RB1' },
-  { id: '20', nome: 'RODRIGO OLIVEIRA MOREIRA', equipamento: 'RB1' },
-];
 
 const EQUIPAMENTOS = [
   { 
@@ -48,22 +26,16 @@ const EQUIPAMENTOS = [
   },
 ];
 
-interface AlocacaoState {
-  [mes: number]: {
-    [equipamentoId: string]: {
-      [postoNome: string]: string; // colaboradorId
-    }
-  }
-}
 
 const PostosDeTrabalho: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(7); // Agosto default
   const { alocacoesPostos, setAlocacoesPostos } = useApp();
 
-  const handleAlocacaoChange = (equipamentoId: string, postoNome: string, colaboradorId: string) => {
+  const handleAlocacaoChange = (equipamentoId: string, postoNome: string, folgaId: number, value: string) => {
     setAlocacoesPostos(prev => {
       const monthData = prev[selectedMonth] || {};
       const equipData = monthData[equipamentoId] || {};
+      const postoData = equipData[postoNome] || {};
       
       return {
         ...prev,
@@ -71,23 +43,28 @@ const PostosDeTrabalho: React.FC = () => {
           ...monthData,
           [equipamentoId]: {
             ...equipData,
-            [postoNome]: colaboradorId
+            [postoNome]: {
+              ...postoData,
+              [folgaId]: value
+            }
           }
         }
       };
     });
   };
 
-  const getColaboradorId = (equipamentoId: string, postoNome: string) => {
-    return alocacoesPostos[selectedMonth]?.[equipamentoId]?.[postoNome] || '';
+  const getColaboradorText = (equipamentoId: string, postoNome: string, folgaId: number) => {
+    return alocacoesPostos[selectedMonth]?.[equipamentoId]?.[postoNome]?.[folgaId] || '';
   };
 
-  // Função para retornar os colaboradores ordenados (pessoas do próprio equipamento primeiro)
-  const getOpcoesColaboradores = (equipamentoId: string) => {
-    const equipePropria = COLABORADORES.filter(c => c.equipamento === equipamentoId);
-    const outros = COLABORADORES.filter(c => c.equipamento !== equipamentoId);
-    
-    return { equipePropria, outros };
+  const getSequenceColor = (seq: number) => {
+    switch (seq) {
+      case 1: return 'bg-[#00FF00] text-black border-black'; // Verde
+      case 2: return 'bg-[#ffea00] text-black border-black'; // Amarelo
+      case 3: return 'bg-[#FF9900] text-black border-black'; // Laranja
+      case 4: return 'bg-black text-white border-black'; // Preto
+      default: return 'bg-white text-black border-black';
+    }
   };
 
   return (
@@ -140,63 +117,63 @@ const PostosDeTrabalho: React.FC = () => {
       </div>
 
       {/* Grid de Equipamentos */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 flex-1 overflow-y-auto pb-6">
+      <div className="grid grid-cols-1 gap-8 flex-1 overflow-y-auto pb-6">
         {EQUIPAMENTOS.map((equipamento) => {
-          const { equipePropria, outros } = getOpcoesColaboradores(equipamento.id);
-          
           return (
-            <div key={equipamento.id} className="bg-white border-2 border-black h-fit flex flex-col">
+            <div key={equipamento.id} className="bg-white border-2 border-black h-fit flex flex-col shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
               <div className="px-5 py-4 border-b-2 border-black bg-black flex items-center justify-between">
                 <h2 className="text-sm font-bold text-white uppercase tracking-widest">{equipamento.id}</h2>
                 <span className="text-xs font-bold text-gray-300 uppercase">{equipamento.nome}</span>
               </div>
               
-              <div className="w-full">
-                <table className="w-full text-sm border-collapse">
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="bg-gray-50 border-b-2 border-black">
-                      <th className="text-left px-4 py-3 text-[10px] font-bold text-black uppercase tracking-widest w-1/3 border-r-2 border-black">Posto</th>
-                      <th className="text-left px-4 py-3 text-[10px] font-bold text-black uppercase tracking-widest w-2/3">Colaborador Alocado</th>
+                    <tr className="border-b-2 border-black">
+                      <th className="text-center px-4 py-3 text-xs font-bold text-black uppercase tracking-widest w-48 border-r-2 border-black bg-gray-50">Posto</th>
+                      {[1, 2, 3, 4].map(folgaId => (
+                        <th key={folgaId} className={`text-center py-3 text-sm font-bold uppercase tracking-widest w-[20%] border-r-2 border-black last:border-r-0 ${getSequenceColor(folgaId)}`}>
+                          {folgaId}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     {equipamento.postos.map((posto, idx) => {
-                      const selectedId = getColaboradorId(equipamento.id, posto);
-                      const isAssigned = selectedId !== '';
-                      
                       return (
-                        <tr key={idx} className={`border-b border-black last:border-0 hover:bg-gray-50 transition-colors group ${isAssigned ? 'bg-blue-50/30' : ''}`}>
-                          <td className="px-4 py-4 border-r-2 border-black">
-                            <span className="text-xs font-bold text-gray-800 uppercase tracking-wider">{posto}</span>
+                        <tr key={idx} className="border-b border-black last:border-0 hover:bg-gray-50 transition-colors">
+                          <td className="px-2 py-2 border-r-2 border-black bg-gray-50/50">
+                            <span className="text-xs font-bold text-black uppercase tracking-wider">{posto}</span>
                           </td>
-                          <td className="px-4 py-3">
-                            <select 
-                              value={selectedId}
-                              onChange={(e) => handleAlocacaoChange(equipamento.id, posto, e.target.value)}
-                              className={`w-full text-xs font-bold uppercase tracking-wider px-3 py-2 border-2 outline-none transition-colors appearance-none cursor-pointer ${
-                                isAssigned 
-                                  ? 'border-blue-500 bg-blue-50 text-blue-900 focus:border-blue-700' 
-                                  : 'border-black bg-white focus:bg-gray-50'
-                              }`}
-                            >
-                              <option value="">-- SELECIONE --</option>
-                              
-                              <optgroup label={`Equipe ${equipamento.id}`}>
-                                {equipePropria.map(c => (
-                                  <option key={c.id} value={c.id}>{c.nome}</option>
-                                ))}
-                              </optgroup>
-                              
-                              <optgroup label="Outros Equipamentos">
-                                {outros.map(c => (
-                                  <option key={c.id} value={c.id}>{c.nome} ({c.equipamento})</option>
-                                ))}
-                              </optgroup>
-                            </select>
-                          </td>
+                          {[1, 2, 3, 4].map(folgaId => (
+                            <td key={folgaId} className="p-0 border-r-2 border-black last:border-r-0 h-full">
+                              <textarea
+                                value={getColaboradorText(equipamento.id, posto, folgaId)}
+                                onChange={(e) => handleAlocacaoChange(equipamento.id, posto, folgaId, e.target.value)}
+                                className="w-full h-full min-h-[60px] p-2 text-xs font-bold uppercase tracking-wider text-center resize-none outline-none focus:bg-yellow-50 bg-transparent"
+                                placeholder="..."
+                              />
+                            </td>
+                          ))}
                         </tr>
                       );
                     })}
+                    {/* Linha FOLGA */}
+                    <tr className="border-t-4 border-black hover:bg-gray-50 transition-colors">
+                      <td className="px-2 py-2 border-r-2 border-black bg-blue-100">
+                        <span className="text-xs font-bold text-blue-900 italic uppercase tracking-wider">FOLGA</span>
+                      </td>
+                      {[1, 2, 3, 4].map(folgaId => (
+                        <td key={folgaId} className="p-0 border-r-2 border-black last:border-r-0 h-full bg-blue-50">
+                          <textarea
+                            value={getColaboradorText(equipamento.id, 'FOLGA', folgaId)}
+                            onChange={(e) => handleAlocacaoChange(equipamento.id, 'FOLGA', folgaId, e.target.value)}
+                            className="w-full h-full min-h-[60px] p-2 text-xs font-bold uppercase tracking-wider text-center resize-none outline-none focus:bg-blue-100 bg-transparent text-blue-900"
+                            placeholder="Nomes em folga"
+                          />
+                        </td>
+                      ))}
+                    </tr>
                   </tbody>
                 </table>
               </div>

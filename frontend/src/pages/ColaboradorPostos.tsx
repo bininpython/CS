@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useApp } from '../App';
-import { COLABORADORES_DB } from '../App';
 
 const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -17,11 +16,18 @@ const ColaboradorPostos: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(7); // Agosto default
   const { alocacoesPostos } = useApp();
 
-  const getColaboradorNome = (equipamentoId: string, postoNome: string) => {
-    const id = alocacoesPostos[selectedMonth]?.[equipamentoId]?.[postoNome];
-    if (!id) return null;
-    const emp = COLABORADORES_DB.find(c => c.id === id);
-    return emp ? emp.nome : null;
+  const getColaboradorText = (equipamentoId: string, postoNome: string, folgaId: number) => {
+    return alocacoesPostos[selectedMonth]?.[equipamentoId]?.[postoNome]?.[folgaId] || '';
+  };
+
+  const getSequenceColor = (seq: number) => {
+    switch (seq) {
+      case 1: return 'bg-[#00FF00] text-black border-black'; // Verde
+      case 2: return 'bg-[#ffea00] text-black border-black'; // Amarelo
+      case 3: return 'bg-[#FF9900] text-black border-black'; // Laranja
+      case 4: return 'bg-black text-white border-black'; // Preto
+      default: return 'bg-white text-black border-black';
+    }
   };
 
   return (
@@ -61,34 +67,58 @@ const ColaboradorPostos: React.FC = () => {
                 <span className="text-xs font-bold text-gray-300 uppercase">{equipamento.nome}</span>
               </div>
               
-              <div className="w-full">
-                <table className="w-full text-sm border-collapse">
+              <div className="w-full overflow-x-auto">
+                <table className="w-full text-sm border-collapse min-w-[700px]">
                   <thead>
-                    <tr className="bg-gray-50 border-b-2 border-black">
-                      <th className="text-left px-4 py-3 text-[10px] font-bold text-black uppercase tracking-widest w-1/3 border-r-2 border-black">Posto</th>
-                      <th className="text-left px-4 py-3 text-[10px] font-bold text-black uppercase tracking-widest w-2/3">Colaborador Alocado</th>
+                    <tr className="border-b-2 border-black">
+                      <th className="text-center px-4 py-3 text-xs font-bold text-black uppercase tracking-widest w-48 border-r-2 border-black bg-gray-50">Posto</th>
+                      {[1, 2, 3, 4].map(folgaId => (
+                        <th key={folgaId} className={`text-center py-3 text-sm font-bold uppercase tracking-widest w-[20%] border-r-2 border-black last:border-r-0 ${getSequenceColor(folgaId)}`}>
+                          {folgaId}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
                     {equipamento.postos.map((posto, idx) => {
-                      const nomeAlocado = getColaboradorNome(equipamento.id, posto);
-                      const isAssigned = !!nomeAlocado;
-                      
                       return (
-                        <tr key={idx} className={`border-b border-black last:border-0 transition-colors group ${isAssigned ? 'bg-blue-50' : 'bg-white'}`}>
-                          <td className="px-4 py-4 border-r-2 border-black">
-                            <span className="text-xs font-bold text-gray-800 uppercase tracking-wider">{posto}</span>
+                        <tr key={idx} className="border-b border-black last:border-0 hover:bg-gray-50 transition-colors">
+                          <td className="px-2 py-3 border-r-2 border-black bg-gray-50/50">
+                            <span className="text-xs font-bold text-black uppercase tracking-wider">{posto}</span>
                           </td>
-                          <td className="px-4 py-4">
-                            {isAssigned ? (
-                              <span className="text-xs font-bold text-blue-900 uppercase tracking-wider">{nomeAlocado}</span>
-                            ) : (
-                              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Aguardando Escala</span>
-                            )}
-                          </td>
+                          {[1, 2, 3, 4].map(folgaId => {
+                            const text = getColaboradorText(equipamento.id, posto, folgaId);
+                            return (
+                              <td key={folgaId} className="p-2 border-r-2 border-black last:border-r-0 h-full text-center align-middle whitespace-pre-wrap">
+                                {text ? (
+                                  <span className="text-xs font-bold text-black uppercase tracking-wider">{text}</span>
+                                ) : (
+                                  <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">-</span>
+                                )}
+                              </td>
+                            );
+                          })}
                         </tr>
                       );
                     })}
+                    {/* Linha FOLGA */}
+                    <tr className="border-t-4 border-black hover:bg-gray-50 transition-colors">
+                      <td className="px-2 py-3 border-r-2 border-black bg-blue-100">
+                        <span className="text-xs font-bold text-blue-900 italic uppercase tracking-wider">FOLGA</span>
+                      </td>
+                      {[1, 2, 3, 4].map(folgaId => {
+                        const text = getColaboradorText(equipamento.id, 'FOLGA', folgaId);
+                        return (
+                          <td key={folgaId} className="p-2 border-r-2 border-black last:border-r-0 h-full bg-blue-50 text-center align-middle whitespace-pre-wrap">
+                            {text ? (
+                              <span className="text-xs font-bold text-blue-900 uppercase tracking-wider">{text}</span>
+                            ) : (
+                              <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">-</span>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
                   </tbody>
                 </table>
               </div>
