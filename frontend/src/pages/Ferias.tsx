@@ -1,7 +1,7 @@
-import React, { useMemo, useState } from 'react';
 import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar, XCircle } from 'lucide-react';
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
+import { exportToPDF } from '../lib/pdfExport';
 
 interface HistoricoAno {
   mes: string;
@@ -110,6 +110,22 @@ const Ferias: React.FC = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    const columns = ['Colaborador', 'Equipamento', 'Mês (Solicitado)', 'Status'];
+    const data = solicitacoesFerias.map(s => [
+      s.nome,
+      s.equipamento,
+      MESES[s.mes - 1] || '-',
+      s.status
+    ]);
+    exportToPDF({
+      title: 'Relatório de Solicitações de Férias',
+      filename: 'solicitacoes_ferias',
+      columns,
+      data
+    });
+  };
+
   const colaboradoresCalculados = useMemo(() => {
     let tabData = dados.filter(emp => emp.equipe === activeTab).map(emp => {
       const total = emp.hist2024.pontos + emp.hist2025.pontos + emp.hist2026.pontos;
@@ -197,10 +213,28 @@ const Ferias: React.FC = () => {
           <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Controle de Férias</h1>
           <p className="text-xs md:text-sm text-gray-500 mt-1 font-medium">Histórico, pontuações e programação - Visão Consolidada</p>
         </div>
-        <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
-          <button onClick={handleNew} className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-sm text-white bg-black px-3 md:px-5 py-2.5 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider">
-            <Plus size={16} /> Novo Colaborador
-          </button>
+        <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 w-full md:w-auto">
+          <div className="relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white w-full sm:w-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
+            <input 
+              type="text" 
+              placeholder="BUSCAR COLABORADOR..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border-2 border-black pl-10 pr-4 py-3 text-xs font-bold uppercase tracking-widest outline-none focus:bg-gray-50 w-full sm:w-64 md:w-72 text-black placeholder-gray-400"
+            />
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button 
+              onClick={handleExportPDF}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
+              <Download size={16} /> Exportar
+            </button>
+            <button onClick={handleNew} className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-sm text-white bg-black px-3 md:px-5 py-3 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <Plus size={16} /> Novo Colaborador
+            </button>
+          </div>
         </div>
       </div>
 

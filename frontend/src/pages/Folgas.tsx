@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, CheckCircle2, XCircle, Search, Filter, Download, Plus, X, Clock } from 'lucide-react';
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
+import { exportToPDF } from '../lib/pdfExport';
 
 export const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -166,6 +166,24 @@ const Folgas: React.FC = () => {
     return [...autoFolgas, ...manuais];
   };
 
+  const handleExportPDF = () => {
+    const columns = ['Data', 'Colaborador', 'Equipamento', 'Turno', 'Status', 'Motivo'];
+    const data = solicitacoesFolga.map(s => [
+      s.data.split('-').reverse().join('/'), 
+      s.nome, 
+      s.equipamento, 
+      s.turno, 
+      s.status, 
+      s.motivo || '-'
+    ]);
+    exportToPDF({
+      title: 'Relatório de Solicitações de Folga',
+      filename: 'relatorio_folgas',
+      columns,
+      data
+    });
+  };
+
   return (
     <div className="flex flex-col h-full w-full min-w-0">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 flex-shrink-0">
@@ -173,10 +191,13 @@ const Folgas: React.FC = () => {
           <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
           <p className="text-xs md:text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <button className="flex items-center gap-2 text-sm text-black border-2 border-black bg-white px-4 py-2 hover:bg-gray-100 transition-colors font-bold uppercase tracking-wider">
-            <Download size={16} /> Exportar
-          </button>
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <button 
+              onClick={handleExportPDF}
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
+              <Download size={16} /> Exportar
+            </button>
           <button 
             onClick={() => {
               const today = `${YEAR}-${String(selectedMonth + 1).padStart(2, '0')}-01`;

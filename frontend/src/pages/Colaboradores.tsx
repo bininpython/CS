@@ -39,6 +39,7 @@ const INITIAL_DATA: Colaborador[] = [
 
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
+import { exportToPDF } from '../lib/pdfExport';
 
 const Colaboradores: React.FC = () => {
   const { colaboradores: dados, setColaboradores: setDados } = useApp();
@@ -76,6 +77,24 @@ const Colaboradores: React.FC = () => {
     emp.registro.includes(searchTerm)
   );
 
+  const handleExportPDF = () => {
+    const columns = ['Status', 'Registro', 'Nome Completo', 'Equipamento', 'Nº Folga', 'Aniversário'];
+    const data = filteredData.map(c => [
+      c.status,
+      c.registro,
+      c.nome,
+      c.equipamento,
+      c.numeroFolga.toString(),
+      c.aniversario
+    ]);
+    exportToPDF({
+      title: 'Relatório de Colaboradores',
+      filename: 'lista_colaboradores',
+      columns,
+      data
+    });
+  };
+
   return (
     <div className="flex flex-col h-full w-full min-w-0 relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 flex-shrink-0">
@@ -95,7 +114,10 @@ const Colaboradores: React.FC = () => {
             />
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <button 
+              onClick={handleExportPDF}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
               <Download size={16} /> Exportar
             </button>
             <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-black border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">

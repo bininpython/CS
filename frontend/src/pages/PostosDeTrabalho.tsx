@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Download, Save } from 'lucide-react';
 import { useApp } from '../App';
+import { exportToPDF } from '../lib/pdfExport';
 
 const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -67,6 +68,22 @@ const PostosDeTrabalho: React.FC = () => {
     }
   };
 
+  const handleExportPDF = () => {
+    const columns = ['Equipamento', 'Posto', 'Colaborador', 'Folga do Posto'];
+    const data = postos[activeTab].map(p => [
+      activeTab,
+      p.nome,
+      alocacoes[`${activeTab}-${p.nome}`] || '-',
+      p.folga.toString()
+    ]);
+    exportToPDF({
+      title: `Alocação de Postos de Trabalho - ${activeTab}`,
+      filename: `postos_${activeTab}`,
+      columns,
+      data
+    });
+  };
+
   return (
     <div className="flex flex-col h-full w-full min-w-0 p-2 md:p-0">
       {/* Header Brutalista */}
@@ -87,7 +104,10 @@ const PostosDeTrabalho: React.FC = () => {
           </select>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <button 
+              onClick={handleExportPDF}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+            >
               <Download size={16} /> Exportar
             </button>
             <button 
