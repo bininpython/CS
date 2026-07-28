@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../App';
-import { MONTH_NAMES, WEEK_DAYS, YEAR, COLABORADORES, getSequenceForDay, getSequenceColor } from './Folgas';
+import { MONTH_NAMES, WEEK_DAYS, YEAR, getSequenceForDay, getSequenceColor } from './Folgas';
 import { supabase } from '../lib/supabase';
 
 const ColaboradorFolgas: React.FC = () => {
