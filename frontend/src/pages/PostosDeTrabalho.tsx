@@ -1,9 +1,10 @@
 import React from 'react';
+import { Download } from 'lucide-react';
 
 const EQUIPAMENTOS = [
-  { id: 'RB1', nome: 'Equipamento RB1', equipe: [] },
-  { id: 'LE1', nome: 'Equipamento LE1', equipe: [] },
-  { id: 'RB4', nome: 'Equipamento RB4', equipe: [] },
+  { id: 'RB1', nome: 'RECOZIMENTO FINAL I', equipe: [] },
+  { id: 'LE1', nome: 'LAMINADOR DE ENCRUAMENTO 1', equipe: [] },
+  { id: 'RB4', nome: 'RECOZIMENTO FINAL IV', equipe: [] },
 ];
 
 const PostosDeTrabalho: React.FC = () => {
@@ -15,8 +16,8 @@ const PostosDeTrabalho: React.FC = () => {
           <p className="text-sm text-muted mt-0.5">Visão geral dos colaboradores alocados por equipamento.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
-            📄 Baixar Relatório (PDF)
+          <button className="flex items-center gap-2 text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
+            <Download size={16} /> Baixar Relatório (PDF)
           </button>
         </div>
       </div>
