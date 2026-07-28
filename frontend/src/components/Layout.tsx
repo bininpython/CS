@@ -6,6 +6,7 @@ const navItems = [
   { label: 'Dashboard', path: '/dashboard', icon: '📊' },
   { label: 'Colaboradores', path: '/colaboradores', icon: '👥' },
   { label: 'Postos de Trabalho', path: '/postos-de-trabalho', icon: '🏭' },
+  { label: 'Escalas', path: '/escalas', icon: '📅' },
   { label: 'Férias', path: '/ferias', icon: '🏖️' },
   { label: 'Folgas', path: '/folgas', icon: '📋' },
 ];
@@ -23,7 +24,7 @@ const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* ─── Sidebar escura ─── */}
+      {/* Sidebar escura */}
       <aside className="w-56 bg-sidebar flex flex-col fixed top-0 left-0 bottom-0 z-30">
         {/* Logo */}
         <div className="px-5 py-5 flex items-center gap-3">
@@ -74,9 +75,9 @@ const Layout: React.FC = () => {
         </div>
       </aside>
 
-      {/* ─── Área principal ─── */}
+      {/* Área principal */}
       <div className="flex-1 ml-56">
-        {/* Topbar branca */}
+        {/* Topbar */}
         <header className="h-14 bg-white border-b border-border flex items-center justify-between px-6 sticky top-0 z-20">
           <div className="flex items-center gap-2 bg-background px-3 py-2 w-96 border border-border">
             <span className="text-muted text-sm">🔍</span>
@@ -99,7 +100,6 @@ const Layout: React.FC = () => {
           </div>
         </header>
 
-        {/* Content */}
         <main className="p-6">
           <Outlet />
         </main>

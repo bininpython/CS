@@ -15,7 +15,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-semibold text-foreground">Dashboard Operacional</h1>
@@ -31,7 +30,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => (
           <div key={card.label} className="bg-white border border-border p-5">
@@ -45,9 +43,7 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Atividades Recentes */}
         <div className="lg:col-span-2 bg-white border border-border">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Atividades Recentes</h2>
@@ -71,31 +67,24 @@ const Dashboard: React.FC = () => {
           </table>
         </div>
 
-        {/* Cobertura por Turno */}
         <div className="bg-white border border-border p-5">
           <h2 className="text-sm font-semibold text-foreground mb-4">Cobertura por Turno</h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted">🌙 Turno Noite (TN)</span>
-              <span className="text-xs font-medium text-foreground">0 alocados</span>
-            </div>
-            <div className="w-full h-2 bg-background">
-              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted">☀️ Turno Manhã (TM)</span>
-              <span className="text-xs font-medium text-foreground">0 alocados</span>
-            </div>
-            <div className="w-full h-2 bg-background">
-              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted">🌅 Turno Tarde (TT)</span>
-              <span className="text-xs font-medium text-foreground">0 alocados</span>
-            </div>
-            <div className="w-full h-2 bg-background">
-              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
-            </div>
+          <div className="space-y-4">
+            {[
+              { emoji: '🌙', label: 'Turno Noite (TN)', pct: 0 },
+              { emoji: '☀️', label: 'Turno Manhã (TM)', pct: 0 },
+              { emoji: '🌅', label: 'Turno Tarde (TT)', pct: 0 },
+            ].map((t) => (
+              <div key={t.label}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-muted">{t.emoji} {t.label}</span>
+                  <span className="text-xs font-medium text-foreground">{t.pct} alocados</span>
+                </div>
+                <div className="w-full h-2 bg-background">
+                  <div className="h-2 bg-purple" style={{ width: `${t.pct}%` }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
