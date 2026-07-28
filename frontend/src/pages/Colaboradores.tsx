@@ -22,18 +22,14 @@ const Colaboradores: React.FC = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Status</th>
+              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider w-32">Status</th>
               <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Nome</th>
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Matrícula</th>
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Função</th>
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Setor</th>
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Equipamentos</th>
-              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Ações</th>
+              <th className="text-left px-5 py-3 text-[10px] font-semibold text-muted uppercase tracking-wider">Equipamento</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td colSpan={7} className="text-center py-16">
+              <td colSpan={3} className="text-center py-16">
                 <p className="text-sm font-medium text-foreground mb-1">Nenhum colaborador cadastrado.</p>
                 <p className="text-xs text-muted">Clique em "+ Novo Colaborador" para começar.</p>
               </td>
