@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Download, Plus, X } from 'lucide-react';
 
 const MONTH_NAMES = [
@@ -49,24 +49,32 @@ const getDayOfYear = (date: Date) => {
   return Math.floor(diff / oneDay);
 };
 
-// Logica Inteligente de Escala 6x2 baseada no Excel de Agosto 2026
+// Lógica Inteligente de Escala 6x2 (Válida para todo 2026)
 const getSequenceForDay = (date: Date): number => {
   const dayOfYear = getDayOfYear(date);
-  // O offset foi calculado para que o dia 1 de Agosto de 2026 (dia 213) bata com o Modulo 1 (Seq 3)
   const mod = ((dayOfYear - 4) % 8 + 8) % 8;
-  if (mod === 0 || mod === 1) return 3; // Seq 3 folga no mod 0 e 1
-  if (mod === 2 || mod === 3) return 4; // Seq 4 folga no mod 2 e 3
-  if (mod === 4 || mod === 5) return 1; // Seq 1 folga no mod 4 e 5
-  if (mod === 6 || mod === 7) return 2; // Seq 2 folga no mod 6 e 7
+  if (mod === 0 || mod === 1) return 3; // Seq 3
+  if (mod === 2 || mod === 3) return 4; // Seq 4
+  if (mod === 4 || mod === 5) return 1; // Seq 1
+  if (mod === 6 || mod === 7) return 2; // Seq 2
   return 0;
 };
 
+const getSequenceColor = (seq: number) => {
+  switch (seq) {
+    case 1: return 'bg-blue-100 text-blue-800 border-blue-300';
+    case 2: return 'bg-orange-100 text-orange-800 border-orange-300';
+    case 3: return 'bg-pink-100 text-pink-800 border-pink-300';
+    case 4: return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    default: return 'bg-gray-100 text-gray-800 border-gray-300';
+  }
+};
+
 const Folgas: React.FC = () => {
-  // Inicializando em Agosto (mês 7 no JS) conforme pedido
   const [selectedMonth, setSelectedMonth] = useState(7); 
   const [folgasManuais, setFolgasManuais] = useState<FolgaManual[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>(''); // YYYY-MM-DD
+  const [selectedDate, setSelectedDate] = useState<string>('');
 
   // Form State
   const [formColaborador, setFormColaborador] = useState('');
@@ -113,7 +121,7 @@ const Folgas: React.FC = () => {
     const autoFolgas = COLABORADORES.filter(c => c.numeroFolga === folgaSequence).map(c => ({
       ...c,
       isAuto: true,
-      tipo: 'Folga Padrão (Escala)'
+      tipo: `Folga Sequência ${c.numeroFolga}`
     }));
 
     // 2. Folgas Manuais / Ajustes
@@ -154,8 +162,23 @@ const Folgas: React.FC = () => {
         </div>
       </div>
 
+      {/* Legenda das Folgas */}
+      <div className="flex items-center gap-6 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black">
+        <span className="text-sm font-bold uppercase tracking-widest text-black mr-2">Legenda de Cores:</span>
+        {[1, 2, 3, 4].map(seq => (
+          <div key={seq} className="flex items-center gap-2">
+            <div className={`w-4 h-4 border ${getSequenceColor(seq)}`}></div>
+            <span className="text-xs font-bold uppercase text-gray-700">Folga {seq}</span>
+          </div>
+        ))}
+        <div className="flex items-center gap-2 ml-auto">
+          <div className="w-4 h-4 border bg-yellow-100 border-yellow-400"></div>
+          <span className="text-xs font-bold uppercase text-gray-700">Ajuste Manual / Exceção</span>
+        </div>
+      </div>
+
       {/* Month selector tabs */}
-      <div className="flex items-center gap-0 mb-6 border-b-2 border-black flex-shrink-0 overflow-x-auto">
+      <div className="flex items-center gap-0 mb-4 border-b-2 border-black flex-shrink-0 overflow-x-auto">
         {MONTH_NAMES.map((name, idx) => (
           <button
             key={idx}
@@ -205,7 +228,7 @@ const Folgas: React.FC = () => {
                 <div className="flex justify-between items-start mb-2">
                   <span className={`text-sm font-bold flex items-center justify-center w-6 h-6 rounded-full ${
                     isSunday ? 'text-red-600' : 'text-black'
-                  } ${isToday ? 'bg-purple text-white' : ''}`}>
+                  } ${isToday ? 'bg-black text-white' : ''}`}>
                     {day}
                   </span>
                   <span className="opacity-0 group-hover:opacity-100 text-[10px] text-white bg-black px-1.5 py-0.5 font-bold uppercase transition-opacity">
@@ -215,20 +238,22 @@ const Folgas: React.FC = () => {
                 
                 {/* Folgas Chips */}
                 <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px] pr-1 custom-scrollbar">
-                  {folgas.map((folga, idx) => (
-                    <div 
-                      key={idx} 
-                      title={`${folga.tipo} - ${folga.nome}`}
-                      className={`text-[9px] px-1.5 py-1 font-bold truncate flex items-center justify-between border ${
-                        folga.isAuto 
-                          ? 'bg-[#00FF00]/20 text-[#008800] border-[#00FF00]' 
-                          : 'bg-yellow-100 text-yellow-800 border-yellow-300'
-                      }`}
-                    >
-                      <span className="truncate uppercase">{folga.nome.split(' ')[0]} {folga.nome.split(' ')[1]}</span>
-                      <span className="text-[8px] opacity-80 ml-1 bg-white/50 px-1 rounded-sm">{folga.equipamento}</span>
-                    </div>
-                  ))}
+                  {folgas.map((folga, idx) => {
+                    const colorClass = folga.isAuto 
+                      ? getSequenceColor(folga.numeroFolga)
+                      : 'bg-yellow-100 text-yellow-800 border-yellow-400';
+
+                    return (
+                      <div 
+                        key={idx} 
+                        title={`${folga.tipo} - ${folga.nome}`}
+                        className={`text-[9px] px-1.5 py-1 font-bold truncate flex items-center justify-between border ${colorClass}`}
+                      >
+                        <span className="truncate uppercase">{folga.nome.split(' ')[0]} {folga.nome.split(' ')[1]}</span>
+                        <span className="text-[8px] opacity-80 ml-1 bg-white/50 px-1 rounded-sm">{folga.equipamento}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
