@@ -167,14 +167,14 @@ const Folgas: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full w-full min-w-0">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 flex-shrink-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
+          <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button className="flex items-center gap-2 text-sm text-black border-2 border-black bg-white px-4 py-2 hover:bg-gray-100 transition-colors font-bold uppercase tracking-wider">
             <Download size={16} /> Exportar
           </button>
@@ -220,17 +220,17 @@ const Folgas: React.FC = () => {
       )}
 
       {/* Legenda das Folgas */}
-      <div className="flex items-center gap-6 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black">
-        <span className="text-sm font-bold uppercase tracking-widest text-black mr-2">Legenda de Cores:</span>
+      <div className="flex flex-wrap items-center gap-4 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black w-full">
+        <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-black">Legenda de Cores:</span>
         {[1, 2, 3, 4].map(seq => (
           <div key={seq} className="flex items-center gap-2">
             <div className={`w-4 h-4 border ${getSequenceColor(seq)}`}></div>
             <span className="text-xs font-bold uppercase text-gray-700">Folga {seq}</span>
           </div>
         ))}
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2 mt-2 sm:mt-0 sm:ml-auto w-full sm:w-auto border-t-2 sm:border-t-0 border-gray-200 pt-2 sm:pt-0">
           <div className="w-4 h-4 border-2 bg-yellow-400 border-yellow-600"></div>
-          <span className="text-xs font-bold uppercase text-gray-700">Ajuste Manual / Exceção</span>
+          <span className="text-[10px] sm:text-xs font-bold uppercase text-gray-700">Ajuste Manual / Exceção</span>
         </div>
       </div>
 
@@ -253,14 +253,16 @@ const Folgas: React.FC = () => {
 
       {/* Calendar Grid */}
       <div className="bg-white border-2 border-black flex-1 flex flex-col overflow-hidden">
-        {/* Days of week header */}
-        <div className="grid grid-cols-7 border-b-2 border-black bg-gray-50 flex-shrink-0">
-          {WEEK_DAYS.map((day) => (
-            <div key={day} className="px-2 py-3 text-center text-xs font-bold text-black uppercase tracking-widest border-r border-black last:border-0">
-              {day}
+        <div className="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
+          <div className="min-w-[700px] h-full flex flex-col">
+            {/* Days of week header */}
+            <div className="grid grid-cols-7 border-b-2 border-black bg-gray-50 flex-shrink-0">
+              {WEEK_DAYS.map((day) => (
+                <div key={day} className="px-2 py-3 text-center text-xs font-bold text-black uppercase tracking-widest border-r border-black last:border-0">
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
         {/* Days grid */}
         <div className="grid grid-cols-7 flex-1 overflow-y-auto bg-gray-100">
@@ -315,6 +317,8 @@ const Folgas: React.FC = () => {
               </div>
             );
           })}
+        </div>
+        </div>
         </div>
       </div>
 

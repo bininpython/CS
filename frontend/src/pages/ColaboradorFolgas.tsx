@@ -161,14 +161,16 @@ const ColaboradorFolgas: React.FC = () => {
 
       {/* Calendar Grid */}
       <div className="bg-white border-2 border-black flex-1 flex flex-col overflow-hidden">
-        {/* Days of week header */}
-        <div className="grid grid-cols-7 border-b-2 border-black bg-gray-50 flex-shrink-0">
-          {WEEK_DAYS.map((day) => (
-            <div key={day} className="px-2 py-3 text-center text-xs font-bold text-black uppercase tracking-widest border-r border-black last:border-0">
-              {day}
+        <div className="overflow-x-auto overflow-y-auto flex-1 custom-scrollbar">
+          <div className="min-w-[700px] h-full flex flex-col">
+            {/* Days of week header */}
+            <div className="grid grid-cols-7 border-b-2 border-black bg-gray-50 flex-shrink-0">
+              {WEEK_DAYS.map((day) => (
+                <div key={day} className="px-2 py-3 text-center text-xs font-bold text-black uppercase tracking-widest border-r border-black last:border-0">
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
         {/* Days grid */}
         <div className="grid grid-cols-7 flex-1 overflow-y-auto bg-gray-100">
@@ -216,6 +218,8 @@ const ColaboradorFolgas: React.FC = () => {
               </div>
             );
           })}
+        </div>
+        </div>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Search, UserPlus, FileEdit } from 'lucide-react';
+import { Download, Search, UserPlus, FileEdit, X, Save } from 'lucide-react';
 import { getSequenceColor } from './Folgas';
 
 interface Colaborador {
@@ -39,7 +39,22 @@ const INITIAL_DATA: Colaborador[] = [
 
 const Colaboradores: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [dados] = useState<Colaborador[]>(INITIAL_DATA);
+  const [dados, setDados] = useState<Colaborador[]>(INITIAL_DATA);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingColab, setEditingColab] = useState<Colaborador | null>(null);
+
+  const handleEditClick = (colab: Colaborador) => {
+    setEditingColab(colab);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingColab) {
+      setDados(prev => prev.map(c => c.id === editingColab.id ? editingColab : c));
+      setIsEditModalOpen(false);
+    }
+  };
 
   const filteredData = dados.filter(emp => 
     emp.nome.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -150,6 +165,7 @@ const Colaboradores: React.FC = () => {
                     {/* Ações */}
                     <td className="px-4 py-3 text-center bg-gray-50">
                       <button 
+                        onClick={() => handleEditClick(emp)}
                         className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-200 transition-colors flex items-center justify-center mx-auto rounded-sm"
                         title="Editar Linha"
                       >
@@ -163,6 +179,119 @@ const Colaboradores: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Edit Modal */}
+      {isEditModalOpen && editingColab && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-md border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black bg-white shrink-0">
+              <div>
+                <h3 className="text-lg font-bold text-black uppercase tracking-wider">Editar Colaborador</h3>
+                <p className="text-xs text-gray-500 font-medium">Atualizar dados do registro</p>
+              </div>
+              <button onClick={() => setIsEditModalOpen(false)} className="text-black hover:bg-gray-100 p-1 transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="overflow-y-auto p-6 space-y-6">
+              <form onSubmit={handleSaveEdit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Registro</label>
+                    <input 
+                      type="text" 
+                      value={editingColab.registro}
+                      onChange={(e) => setEditingColab({...editingColab, registro: e.target.value})}
+                      className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Status</label>
+                    <select 
+                      value={editingColab.status}
+                      onChange={(e) => setEditingColab({...editingColab, status: e.target.value as 'Ativo' | 'Férias'})}
+                      className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                    >
+                      <option value="Ativo">Ativo</option>
+                      <option value="Férias">Férias</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-black">Nome Completo</label>
+                  <input 
+                    type="text" 
+                    value={editingColab.nome}
+                    onChange={(e) => setEditingColab({...editingColab, nome: e.target.value})}
+                    className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Equipamento</label>
+                    <select 
+                      value={editingColab.equipamento}
+                      onChange={(e) => setEditingColab({...editingColab, equipamento: e.target.value as any})}
+                      className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                    >
+                      <option value="RB1">RB1</option>
+                      <option value="LE1">LE1</option>
+                      <option value="RB4">RB4</option>
+                      <option value="OUTRO">OUTRO</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Nº de Folga</label>
+                    <select 
+                      value={editingColab.numeroFolga}
+                      onChange={(e) => setEditingColab({...editingColab, numeroFolga: e.target.value})}
+                      className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-black">Aniversário</label>
+                  <input 
+                    type="text" 
+                    value={editingColab.aniversario}
+                    onChange={(e) => setEditingColab({...editingColab, aniversario: e.target.value})}
+                    className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                    placeholder="DD/MM"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-3 border-t-2 border-black mt-6">
+                  <button 
+                    type="button" 
+                    onClick={() => setIsEditModalOpen(false)}
+                    className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black hover:bg-gray-100 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    type="submit"
+                    className="flex items-center gap-2 px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black bg-[#00FF00] hover:bg-[#00cc00] transition-colors"
+                  >
+                    <Save size={16} />
+                    Salvar
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
