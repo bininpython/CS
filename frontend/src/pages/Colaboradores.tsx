@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Download, Search, UserPlus, FileEdit } from 'lucide-react';
+import { getSequenceColor } from './Folgas';
 
 interface Colaborador {
   id: string;
@@ -74,6 +75,17 @@ const Colaboradores: React.FC = () => {
         </div>
       </div>
 
+      {/* Legenda das Folgas */}
+      <div className="flex items-center gap-4 mb-4 flex-wrap bg-white p-3 border-2 border-black w-fit shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex-shrink-0">
+        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-black mr-2">Grupos de Folga:</span>
+        {[1, 2, 3, 4].map(seq => (
+          <div key={seq} className="flex items-center gap-2">
+            <div className={`w-4 h-4 border ${getSequenceColor(seq)}`}></div>
+            <span className="text-[10px] font-bold uppercase text-gray-700">Folga {seq}</span>
+          </div>
+        ))}
+      </div>
+
       <div className="w-full flex-1 overflow-hidden flex flex-col bg-white">
         <div className="overflow-x-auto overflow-y-auto w-full max-h-[calc(100vh-180px)] border-2 border-black">
           <table className="text-xs sm:text-sm border-collapse w-full text-center bg-white min-w-[800px]">
@@ -124,8 +136,10 @@ const Colaboradores: React.FC = () => {
                     </td>
 
                     {/* Nº Folga */}
-                    <td className="px-4 py-3 border-r border-black font-bold text-base">
-                      {emp.numeroFolga}
+                    <td className="px-4 py-2 border-r border-black text-center">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 font-extrabold text-sm border-2 ${getSequenceColor(Number(emp.numeroFolga))}`}>
+                        {emp.numeroFolga}
+                      </span>
                     </td>
 
                     {/* Aniversário */}
