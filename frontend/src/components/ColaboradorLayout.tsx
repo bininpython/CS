@@ -15,14 +15,14 @@ const ColaboradorLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Topbar */}
-      <header className="h-16 bg-white border-b-2 border-black flex items-center justify-between px-6 shrink-0 sticky top-0 z-50">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-black flex items-center justify-center">
-            <span className="text-sm font-bold text-white uppercase">COL</span>
+      <header className="h-16 bg-white border-b-2 border-black flex items-center justify-between px-3 md:px-6 shrink-0 sticky top-0 z-50 w-full gap-2">
+        <div className="flex items-center gap-2 md:gap-4 shrink-0 min-w-0">
+          <div className="w-8 h-8 md:w-10 md:h-10 bg-black flex items-center justify-center shrink-0">
+            <span className="text-xs md:text-sm font-bold text-white uppercase">COL</span>
           </div>
-          <div>
-            <h1 className="text-sm font-bold text-black uppercase tracking-widest">Portal do Colaborador</h1>
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Autoatendimento</p>
+          <div className="min-w-0 truncate">
+            <h1 className="text-xs md:text-sm font-bold text-black uppercase tracking-widest truncate">Portal do Colaborador</h1>
+            <p className="text-[8px] md:text-[10px] font-bold text-gray-500 uppercase tracking-widest truncate">Autoatendimento</p>
           </div>
         </div>
 
@@ -64,10 +64,10 @@ const ColaboradorLayout: React.FC = () => {
 
         <button 
           onClick={handleLogout}
-          className="flex items-center gap-2 text-xs font-bold text-black uppercase tracking-widest border-2 border-black px-4 py-2 hover:bg-gray-100 transition-colors"
+          className="flex items-center justify-center gap-1 md:gap-2 text-[10px] md:text-xs font-bold text-black uppercase tracking-widest border-2 border-black px-2 py-1.5 md:px-4 md:py-2 hover:bg-gray-100 transition-colors shrink-0"
         >
-          <LogOut size={16} />
-          Sair
+          <LogOut size={16} className="shrink-0" />
+          <span className="hidden sm:inline">Sair</span>
         </button>
       </header>
 

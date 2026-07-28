@@ -46,7 +46,7 @@ const Colaboradores: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative">
+    <div className="flex flex-col h-full w-full min-w-0 relative">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 flex-shrink-0">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-widest">Colaboradores</h1>

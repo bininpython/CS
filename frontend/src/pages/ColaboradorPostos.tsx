@@ -25,7 +25,7 @@ const ColaboradorPostos: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden">
+    <div className="flex flex-col h-full w-full min-w-0">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-shrink-0">
         <div>

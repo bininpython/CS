@@ -67,7 +67,7 @@ const ColaboradorFolgas: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto space-y-8">
+    <div className="flex flex-col h-full w-full min-w-0 max-w-2xl mx-auto space-y-8">
       
       {/* Formulário de Solicitação */}
       <div className="bg-white border-2 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">

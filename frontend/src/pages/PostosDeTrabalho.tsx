@@ -91,7 +91,7 @@ const PostosDeTrabalho: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden">
+    <div className="flex flex-col h-full w-full min-w-0 p-2 md:p-0">
       {/* Header Brutalista */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 flex-shrink-0">
         <div>
