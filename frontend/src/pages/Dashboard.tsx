@@ -1,6 +1,7 @@
 import React from 'react';
-import { Users, Factory, Palmtree, ClipboardList, Moon, Sun, Sunrise, Filter, Plus } from 'lucide-react';
-import { useApp } from '../App';
+import { Users, Factory, Palmtree, ClipboardList, Filter, Plus, CalendarClock } from 'lucide-react';
+import { useApp, COLABORADORES_DB } from '../App';
+import { getSequenceForDay, getSequenceColor } from './Folgas';
 
 const Dashboard: React.FC = () => {
   const { supervisor, solicitacoesFerias, solicitacoesFolga } = useApp();
@@ -13,6 +14,25 @@ const Dashboard: React.FC = () => {
     { label: 'FÉRIAS PENDENTES', value: solicitacoesFerias.filter(s => s.status === 'Pendente').length, sub: 'aguardando aprovação', icon: Palmtree },
     { label: 'FOLGAS PENDENTES', value: solicitacoesFolga.filter(s => s.status === 'Pendente').length, sub: 'aguardando aprovação', icon: ClipboardList },
   ];
+
+  // Atividades Recentes (combining both solicitacoes)
+  const atividades = [
+    ...solicitacoesFolga.map(s => ({ id: `folga-${s.id}`, nome: s.nome, tipo: 'Folga', data: s.data, status: s.status })),
+    ...solicitacoesFerias.map(s => ({ id: `ferias-${s.id}`, nome: s.nome, tipo: `Férias (Mês ${s.mes})`, status: s.status }))
+  ].slice(0, 5); // Take last 5 for now
+
+  // Lógica Folga de Amanhã
+  const amanha = new Date();
+  amanha.setDate(amanha.getDate() + 1);
+  const sequenciaAmanha = getSequenceForDay(amanha);
+  const colorClass = getSequenceColor(sequenciaAmanha);
+  const colaboradoresFolgaAmanha = COLABORADORES_DB.filter(c => c.numeroFolga === sequenciaAmanha);
+  
+  const byEquipamento = colaboradoresFolgaAmanha.reduce((acc, colab) => {
+    if (!acc[colab.equipamento]) acc[colab.equipamento] = [];
+    acc[colab.equipamento].push(colab.nome);
+    return acc;
+  }, {} as Record<string, string[]>);
 
   return (
     <div>
@@ -65,39 +85,67 @@ const Dashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td colSpan={3} className="text-center py-12 text-gray-500 bg-white">
-                    NENHUMA ATIVIDADE RECENTE ENCONTRADA.
-                  </td>
-                </tr>
+                {atividades.length === 0 ? (
+                  <tr>
+                    <td colSpan={3} className="text-center py-12 text-gray-500 bg-white">
+                      NENHUMA ATIVIDADE RECENTE ENCONTRADA.
+                    </td>
+                  </tr>
+                ) : (
+                  atividades.map((ativ, idx) => (
+                    <tr key={ativ.id} className={`border-b-2 border-black hover:bg-gray-50 transition-colors ${idx === atividades.length - 1 ? 'border-b-0' : ''}`}>
+                      <td className="px-6 py-4 border-r-2 border-black">{ativ.nome}</td>
+                      <td className="px-6 py-4 border-r-2 border-black">{ativ.tipo} {ativ.data ? `(${ativ.data})` : ''}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 text-[10px] uppercase font-bold rounded-sm ${
+                          ativ.status === 'Aprovado' ? 'bg-[#00FF00] text-black' :
+                          ativ.status === 'Recusado' ? 'bg-red-500 text-white' :
+                          'bg-yellow-300 text-black'
+                        }`}>
+                          {ativ.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
 
-        <div className="bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] p-6">
-          <h2 className="text-sm font-bold text-black uppercase tracking-widest mb-8 border-b-2 border-black pb-4">Cobertura por Turno</h2>
-          <div className="space-y-8">
-            {[
-              { icon: Moon, label: 'Turno Noite (TN)', pct: 30 },
-              { icon: Sun, label: 'Turno Manhã (TM)', pct: 45 },
-              { icon: Sunrise, label: 'Turno Tarde (TT)', pct: 25 },
-            ].map((t) => {
-              const TurnoIcon = t.icon;
-              return (
-                <div key={t.label}>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-bold text-black uppercase tracking-widest flex items-center gap-2">
-                      <TurnoIcon size={16} className="text-black" /> {t.label}
-                    </span>
-                    <span className="text-xs font-bold text-black uppercase tracking-widest">{t.pct}%</span>
+        <div className="bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+          <div className="flex items-center justify-between px-6 py-5 border-b-2 border-black bg-gray-50">
+            <h2 className="text-sm font-bold text-black uppercase tracking-widest flex items-center gap-2">
+              <CalendarClock size={18} /> Folga de Amanhã
+            </h2>
+            <div className={`w-8 h-8 flex items-center justify-center font-extrabold text-sm border-2 ${colorClass}`}>
+              {sequenciaAmanha}
+            </div>
+          </div>
+          <div className="p-6 flex-1 bg-white overflow-y-auto max-h-[400px] custom-scrollbar">
+            {Object.keys(byEquipamento).length === 0 ? (
+              <div className="text-center py-10 text-gray-500 uppercase font-bold text-xs">
+                Ninguém está de folga amanhã (Folga {sequenciaAmanha}).
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {Object.entries(byEquipamento).map(([equip, nomes]) => (
+                  <div key={equip}>
+                    <h3 className="text-xs font-bold text-black uppercase tracking-widest mb-3 border-b-2 border-black pb-1 inline-block">
+                      Equipamento: {equip}
+                    </h3>
+                    <ul className="space-y-2">
+                      {nomes.map((nome, idx) => (
+                        <li key={idx} className="text-xs font-bold text-gray-700 uppercase flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${colorClass.split(' ')[0]}`}></span>
+                          {nome}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="w-full h-4 bg-gray-100 border-2 border-black">
-                    <div className="h-full bg-black" style={{ width: `${t.pct}%` }}></div>
-                  </div>
-                </div>
-              );
-            })}
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
