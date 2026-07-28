@@ -1,3 +1,4 @@
+import React, { useState, useMemo } from 'react';
 import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar, XCircle } from 'lucide-react';
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';

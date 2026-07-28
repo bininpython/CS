@@ -34,6 +34,14 @@ const Dashboard: React.FC = () => {
     return acc;
   }, {} as Record<string, string[]>);
 
+  // Lógica Aniversariantes
+  const currentMonthStr = String(new Date().getMonth() + 1).padStart(2, '0');
+  const aniversariantesDoMes = colaboradores.filter(c => {
+    if (!c.aniversario) return false;
+    const parts = c.aniversario.split('/');
+    return parts.length === 2 && parts[1] === currentMonthStr;
+  });
+
   return (
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
@@ -113,7 +121,8 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+        <div className="flex flex-col gap-8">
+          <div className="bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
           <div className="flex items-center justify-between px-6 py-5 border-b-2 border-black bg-gray-50">
             <h2 className="text-sm font-bold text-black uppercase tracking-widest flex items-center gap-2">
               <CalendarClock size={18} /> Folga de Amanhã
@@ -146,6 +155,34 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
             )}
+          </div>
+          </div>
+          
+          {/* Aniversariantes do Mês */}
+          <div className="bg-white border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-5 border-b-2 border-black bg-gray-50">
+              <h2 className="text-sm font-bold text-black uppercase tracking-widest flex items-center gap-2">
+                🎂 Aniversariantes do Mês
+              </h2>
+            </div>
+            <div className="p-6 flex-1 bg-white overflow-y-auto max-h-[300px] custom-scrollbar">
+              {aniversariantesDoMes.length === 0 ? (
+                <div className="text-center py-6 text-gray-500 uppercase font-bold text-xs">
+                  Nenhum aniversariante neste mês.
+                </div>
+              ) : (
+                <ul className="space-y-3">
+                  {aniversariantesDoMes.map((c, idx) => (
+                    <li key={idx} className="flex items-center justify-between border-b-2 border-black pb-2 last:border-0 last:pb-0">
+                      <span className="text-xs font-bold text-gray-700 uppercase">{c.nome}</span>
+                      <span className="text-[10px] font-bold text-black border-2 border-black px-2 py-1 bg-yellow-300">
+                        {c.aniversario}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
       </div>

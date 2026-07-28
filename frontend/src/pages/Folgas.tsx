@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, CheckCircle2, XCircle, Search, Filter, Download, Plus, X, Clock } from 'lucide-react';
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';

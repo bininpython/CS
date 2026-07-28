@@ -49,6 +49,16 @@ const Colaboradores: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingColab, setEditingColab] = useState<Colaborador | null>(null);
 
+  const currentMonthStr = String(new Date().getMonth() + 1).padStart(2, '0');
+  const isAniversarianteMes = (aniversario: string) => {
+    if (!aniversario) return false;
+    const parts = aniversario.split('/');
+    if (parts.length === 2) {
+      return parts[1] === currentMonthStr;
+    }
+    return false;
+  };
+
   const handleEditClick = (colab: Colaborador) => {
     setEditingColab(colab);
     setIsEditModalOpen(true);
@@ -189,7 +199,7 @@ const Colaboradores: React.FC = () => {
                     
                     {/* Nome */}
                     <td className="px-4 py-3 border-r border-black text-left font-bold">
-                      {emp.nome}
+                      {emp.nome} {isAniversarianteMes(emp.aniversario) && <span title="Aniversariante do Mês!">🎂</span>}
                     </td>
 
                     {/* Equipamento */}
