@@ -1,35 +1,44 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SUPERVISORS, useApp } from '../App';
 
 const SupervisorSelector: React.FC = () => {
   const navigate = useNavigate();
+  const { setSupervisor } = useApp();
 
-  const supervisors = [
-    { id: 1, name: 'Petrus', turn: 'Turno Noite', code: 'TN', time: '22:00 às 06:00' },
-    { id: 2, name: 'Axel', turn: 'Turno Manhã', code: 'TM', time: '06:00 às 14:00' },
-    { id: 3, name: 'Sávio', turn: 'Turno Tarde', code: 'TT', time: '14:00 às 22:00' },
-  ];
+  const handleSelect = (supId: number) => {
+    const sup = SUPERVISORS.find(s => s.id === supId);
+    if (sup) {
+      setSupervisor(sup);
+      navigate('/dashboard');
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
-      <div className="max-w-4xl w-full">
-        <h1 className="text-3xl font-bold text-foreground text-center mb-2">Selecione seu Perfil</h1>
-        <p className="text-textSecondary text-center mb-10">Escolha o turno que deseja administrar</p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {supervisors.map(sup => (
-            <div 
-              key={sup.id} 
-              onClick={() => navigate('/dashboard')}
-              className="bg-card border border-border rounded-xl p-6 cursor-pointer hover:border-primary transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/10 group"
+    <div className="min-h-screen bg-background">
+      {/* Topbar */}
+      <header className="h-14 bg-white border-b border-border flex items-center px-5">
+        <span className="text-sm font-bold text-foreground tracking-tight mr-3">CP</span>
+        <span className="text-sm text-foreground">Controle Supervisão</span>
+      </header>
+
+      {/* Selector Content */}
+      <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100vh - 56px)' }}>
+        <h1 className="text-xl font-semibold text-foreground mb-2">Selecione o Supervisor</h1>
+        <p className="text-sm text-muted mb-10">Escolha o perfil do turno para acessar o painel de controle.</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl w-full px-6">
+          {SUPERVISORS.map((sup) => (
+            <button
+              key={sup.id}
+              onClick={() => handleSelect(sup.id)}
+              className="bg-white border border-border rounded-xl p-8 flex flex-col items-center gap-3 cursor-pointer hover:border-accent hover:shadow-md transition-all group"
             >
-              <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <span className="text-lg font-bold text-primary">{sup.code}</span>
-              </div>
-              <h2 className="text-xl font-bold text-foreground mb-1">{sup.name}</h2>
-              <p className="text-sm font-medium text-textSecondary">{sup.turn}</p>
-              <p className="text-xs text-textSecondary/60 mt-1">{sup.time}</p>
-            </div>
+              <span className="text-4xl">{sup.emoji}</span>
+              <span className="text-base font-semibold text-foreground">{sup.name}</span>
+              <span className="text-xs text-muted">{sup.turn} ({sup.code})</span>
+              <span className="text-xs text-muted">{sup.timeStart} – {sup.timeEnd}</span>
+            </button>
           ))}
         </div>
       </div>

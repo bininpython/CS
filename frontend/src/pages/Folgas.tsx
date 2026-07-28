@@ -1,0 +1,43 @@
+import React from 'react';
+
+const Folgas: React.FC = () => {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <h1 className="text-lg font-semibold text-foreground">Folgas</h1>
+          <span className="text-[10px] font-bold bg-accentLight text-accent px-2 py-0.5 rounded uppercase">
+            0 registros
+          </span>
+        </div>
+        <button className="bg-accent text-white text-sm font-medium px-4 py-2 rounded hover:bg-accent/90 transition-colors">
+          Nova Folga
+        </button>
+      </div>
+
+      <div className="bg-white border border-border rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Colaborador</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Data</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Tipo</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Motivo</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Status</th>
+              <th className="text-left px-4 py-3 text-xs font-medium text-muted">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colSpan={6} className="text-center py-12 text-sm text-muted">
+                Nenhuma folga registrada.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default Folgas;

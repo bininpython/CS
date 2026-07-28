@@ -1,25 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-background text-foreground antialiased selection:bg-primary selection:text-white;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #F7F7FA;
+    color: #0B0B0F;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Custom scrollbar for dark theme */
+::selection {
+  background-color: #6D28D9;
+  color: #FFFFFF;
+}
+
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0B0F; 
+  background: #F7F7FA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27273A; 
-  border-radius: 4px;
+  background: #E4E4E7;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3B0764; 
+  background: #A1A1AA;
 }
