@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2 } from 'lucide-react';
-import { useApp } from '../App';
 import { INITIAL_DATA, MESES } from './Ferias';
+import { supabase } from '../lib/supabase';
 
 const ColaboradorFerias: React.FC = () => {
-  const { solicitacoesFerias, setSolicitacoesFerias } = useApp();
+  const { solicitacoesFerias, setSolicitacoesFerias, colaboradores } = useApp();
   
   // Form state
   const [nome, setNome] = useState('');
@@ -13,24 +13,40 @@ const ColaboradorFerias: React.FC = () => {
   const [mesDesejado, setMesDesejado] = useState('1'); // Jan
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome) return;
 
-    const novaSolicitacao = {
-      id: Date.now().toString(),
-      colaboradorId: 'colab-' + Date.now(), // mockup
+    const colab = colaboradores.find(c => c.nome.toUpperCase() === nome.toUpperCase());
+    const cId = colab ? colab.id : ('colab-' + Date.now());
+
+    const { error } = await supabase.from('solicitacoes_ferias').insert({
+      colaborador_id: cId,
       nome,
       turno,
       equipamento,
       mes: parseInt(mesDesejado),
-      status: 'Pendente' as const
-    };
+      status: 'Pendente'
+    });
 
-    setSolicitacoesFerias([...solicitacoesFerias, novaSolicitacao]);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setNome('');
+    if (!error) {
+      const novaSolicitacao = {
+        id: Date.now().toString(),
+        colaboradorId: cId,
+        nome,
+        turno,
+        equipamento,
+        mes: parseInt(mesDesejado),
+        status: 'Pendente' as const
+      };
+
+      setSolicitacoesFerias([...solicitacoesFerias, novaSolicitacao]);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 4000);
+      setNome('');
+    } else {
+      alert('Erro ao enviar solicitação.');
+    }
   };
 
   // Tabela read-only filter

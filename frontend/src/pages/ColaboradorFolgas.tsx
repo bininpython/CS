@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, CheckCircle2, X } from 'lucide-react';
 import { useApp } from '../App';
 import { MONTH_NAMES, WEEK_DAYS, YEAR, COLABORADORES, getSequenceForDay, getSequenceColor } from './Folgas';
+import { supabase } from '../lib/supabase';
 
 const ColaboradorFolgas: React.FC = () => {
   const { solicitacoesFolga, setSolicitacoesFolga } = useApp();
@@ -43,27 +44,41 @@ const ColaboradorFolgas: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome || !dataDesejada) return;
 
-    const novaSolicitacao = {
-      id: Date.now().toString(),
-      colaboradorId: 'colab-' + Date.now(), // mockup
+    const { error } = await supabase.from('solicitacoes_folga').insert({
+      colaborador_id: 'colab-' + Date.now(),
       nome,
       turno,
       equipamento,
       data: dataDesejada,
       motivo,
-      status: 'Pendente' as const
-    };
+      status: 'Pendente'
+    });
 
-    setSolicitacoesFolga([...solicitacoesFolga, novaSolicitacao]);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4000);
-    setNome('');
-    setMotivo('');
-    setDataDesejada('');
+    if (!error) {
+      const novaSolicitacao = {
+        id: Date.now().toString(),
+        colaboradorId: 'colab-' + Date.now(),
+        nome,
+        turno,
+        equipamento,
+        data: dataDesejada,
+        motivo,
+        status: 'Pendente' as const
+      };
+
+      setSolicitacoesFolga([...solicitacoesFolga, novaSolicitacao]);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 4000);
+      setNome('');
+      setMotivo('');
+      setDataDesejada('');
+    } else {
+      alert('Erro ao enviar solicitação.');
+    }
   };
 
   return (

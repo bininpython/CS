@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import SupervisorSelector from './pages/SupervisorSelector';
 import Dashboard from './pages/Dashboard';
@@ -7,6 +7,7 @@ import PostosDeTrabalho from './pages/PostosDeTrabalho';
 import Ferias from './pages/Ferias';
 import Folgas from './pages/Folgas';
 import Layout from './components/Layout';
+import { supabase } from './lib/supabase';
 
 // Colaborador Layout & Pages
 import ColaboradorLayout from './components/ColaboradorLayout';
@@ -70,6 +71,16 @@ export interface SolicitacaoFolga {
   status: 'Pendente' | 'Aprovado' | 'Recusado';
 }
 
+export interface Colaborador {
+  id: string;
+  status: 'Ativo' | 'Férias';
+  registro: string;
+  nome: string;
+  equipamento: 'RB1' | 'LE1' | 'RB4' | 'OUTRO';
+  numeroFolga: string | number;
+  aniversario: string;
+}
+
 interface AppContextType {
   role: 'SUPERVISOR' | 'COLABORADOR' | null;
   setRole: (r: 'SUPERVISOR' | 'COLABORADOR' | null) => void;
@@ -84,6 +95,9 @@ interface AppContextType {
   
   solicitacoesFolga: SolicitacaoFolga[];
   setSolicitacoesFolga: React.Dispatch<React.SetStateAction<SolicitacaoFolga[]>>;
+  
+  colaboradores: Colaborador[];
+  setColaboradores: React.Dispatch<React.SetStateAction<Colaborador[]>>;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -97,6 +111,8 @@ export const AppContext = createContext<AppContextType>({
   setSolicitacoesFerias: () => {},
   solicitacoesFolga: [],
   setSolicitacoesFolga: () => {},
+  colaboradores: [],
+  setColaboradores: () => {},
 });
 
 export const useApp = () => useContext(AppContext);
@@ -107,6 +123,71 @@ const App: React.FC = () => {
   const [alocacoesPostos, setAlocacoesPostos] = useState<any>({});
   const [solicitacoesFerias, setSolicitacoesFerias] = useState<SolicitacaoFerias[]>([]);
   const [solicitacoesFolga, setSolicitacoesFolga] = useState<SolicitacaoFolga[]>([]);
+  const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
+  
+  useEffect(() => {
+    const loadData = async () => {
+      // 1. Fetch Colaboradores
+      let { data: colabs, error } = await supabase.from('colaboradores').select('*');
+      
+      // Auto-seed if database is empty to prevent breaking the UI
+      if (colabs && colabs.length === 0) {
+        const seedData = COLABORADORES_DB.map(c => ({
+          nome: c.nome,
+          registro: c.registro || '00000-0',
+          equipamento: c.equipamento,
+          status: 'Ativo',
+          numero_folga: Number(c.numeroFolga),
+          aniversario: c.aniversario || ''
+        }));
+        await supabase.from('colaboradores').insert(seedData);
+        const res = await supabase.from('colaboradores').select('*');
+        colabs = res.data;
+      }
+      
+      if (colabs) {
+        setColaboradores(colabs.map((c: any) => ({
+          id: c.id,
+          nome: c.nome,
+          registro: c.registro,
+          equipamento: c.equipamento,
+          status: c.status,
+          numeroFolga: c.numero_folga.toString(),
+          aniversario: c.aniversario
+        })));
+      }
+      
+      // 2. Fetch Folgas
+      const { data: folgas } = await supabase.from('solicitacoes_folga').select('*');
+      if (folgas) {
+        setSolicitacoesFolga(folgas.map((f: any) => ({
+           id: f.id,
+           colaboradorId: f.colaborador_id,
+           nome: f.nome,
+           turno: f.turno,
+           equipamento: f.equipamento,
+           data: f.data,
+           status: f.status,
+           motivo: f.motivo || ''
+        })));
+      }
+      
+      // 3. Fetch Ferias
+      const { data: ferias } = await supabase.from('solicitacoes_ferias').select('*');
+      if (ferias) {
+        setSolicitacoesFerias(ferias.map((f: any) => ({
+           id: f.id,
+           colaboradorId: f.colaborador_id,
+           nome: f.nome,
+           turno: f.turno,
+           equipamento: f.equipamento,
+           mes: f.mes,
+           status: f.status
+        })));
+      }
+    };
+    loadData();
+  }, []);
 
   return (
     <AppContext.Provider value={{ 
@@ -114,7 +195,8 @@ const App: React.FC = () => {
       supervisor, setSupervisor,
       alocacoesPostos, setAlocacoesPostos,
       solicitacoesFerias, setSolicitacoesFerias,
-      solicitacoesFolga, setSolicitacoesFolga
+      solicitacoesFolga, setSolicitacoesFolga,
+      colaboradores, setColaboradores
     }}>
       <Routes>
         <Route path="/" element={<SupervisorSelector />} />

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar } from 'lucide-react';
+import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar, XCircle } from 'lucide-react';
 import { useApp } from '../App';
+import { supabase } from '../lib/supabase';
 
 interface HistoricoAno {
   mes: string;
@@ -80,24 +81,32 @@ const Ferias: React.FC = () => {
   
   const { solicitacoesFerias, setSolicitacoesFerias } = useApp();
 
-  const handleAprovarFerias = (idSolicitacao: string) => {
-    // 1. Atualizar status na solicitacao
-    setSolicitacoesFerias(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
-    
-    // 2. Procurar na tabela se esse colaborador existe, e pintar o mes de laranja
-    const sol = solicitacoesFerias.find(s => s.id === idSolicitacao);
-    if (sol) {
-      const mesName = MESES[sol.mes];
-      setDados(prev => prev.map(emp => {
-        // Simple match by name (as this is a mock)
-        if (emp.nome.toUpperCase() === sol.nome.toUpperCase()) {
-          // Add as option 1 and color orange
-          const newOpcoes = [...emp.opcoes] as [OpcaoFerias, OpcaoFerias, OpcaoFerias];
-          newOpcoes[0] = { mes: mesName, color: 'orange' };
-          return { ...emp, opcoes: newOpcoes, dataFerias: `Aprovado para ${mesName}` };
-        }
-        return emp;
-      }));
+  const handleAprovarFerias = async (idSolicitacao: string) => {
+    const { error } = await supabase.from('solicitacoes_ferias').update({ status: 'Aprovado' }).eq('id', idSolicitacao);
+    if (!error) {
+      setSolicitacoesFerias(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
+      
+      const sol = solicitacoesFerias.find(s => s.id === idSolicitacao);
+      if (sol) {
+        const mesName = MESES[sol.mes];
+        setDados(prev => prev.map(emp => {
+          if (emp.nome.toUpperCase() === sol.nome.toUpperCase()) {
+            return {
+              ...emp,
+              opcoes: [{ mes: mesName, color: 'orange' }, emp.opcoes[1], emp.opcoes[2]],
+              dataFerias: `Aprovado para ${mesName}`
+            };
+          }
+          return emp;
+        }));
+      }
+    }
+  };
+
+  const handleRecusarFerias = async (idSolicitacao: string) => {
+    const { error } = await supabase.from('solicitacoes_ferias').update({ status: 'Recusado' }).eq('id', idSolicitacao);
+    if (!error) {
+      setSolicitacoesFerias(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Recusado' } : s));
     }
   };
 

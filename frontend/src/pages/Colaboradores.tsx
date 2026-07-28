@@ -37,9 +37,12 @@ const INITIAL_DATA: Colaborador[] = [
   { id: generateId(), status: 'Ativo', registro: '48232-8', nome: 'RODRIGO OLIVEIRA MOREIRA', equipamento: 'RB1', numeroFolga: '2', aniversario: '22/10' },
 ];
 
+import { useApp } from '../App';
+import { supabase } from '../lib/supabase';
+
 const Colaboradores: React.FC = () => {
+  const { colaboradores: dados, setColaboradores: setDados } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
-  const [dados, setDados] = useState<Colaborador[]>(INITIAL_DATA);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingColab, setEditingColab] = useState<Colaborador | null>(null);
 
@@ -48,10 +51,22 @@ const Colaboradores: React.FC = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = (e: React.FormEvent) => {
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (editingColab) {
-      setDados(prev => prev.map(c => c.id === editingColab.id ? editingColab : c));
+      // Atualiza no Supabase
+      const { error } = await supabase.from('colaboradores').update({
+        nome: editingColab.nome,
+        registro: editingColab.registro,
+        equipamento: editingColab.equipamento,
+        status: editingColab.status,
+        numero_folga: Number(editingColab.numeroFolga),
+        aniversario: editingColab.aniversario
+      }).eq('id', editingColab.id);
+
+      if (!error) {
+        setDados(prev => prev.map(c => c.id === editingColab.id ? editingColab : c));
+      }
       setIsEditModalOpen(false);
     }
   };

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Users, Factory, Palmtree, ClipboardList, Filter, Plus, CalendarClock } from 'lucide-react';
-import { useApp, COLABORADORES_DB } from '../App';
+import { useApp } from '../App';
 import { getSequenceForDay, getSequenceColor } from './Folgas';
 
 const Dashboard: React.FC = () => {
-  const { supervisor, solicitacoesFerias, solicitacoesFolga } = useApp();
+  const { supervisor, solicitacoesFerias, solicitacoesFolga, colaboradores } = useApp();
 
   if (!supervisor) return null;
 
@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
   amanha.setDate(amanha.getDate() + 1);
   const sequenciaAmanha = getSequenceForDay(amanha);
   const colorClass = getSequenceColor(sequenciaAmanha);
-  const colaboradoresFolgaAmanha = COLABORADORES_DB.filter(c => c.numeroFolga === sequenciaAmanha);
+  const colaboradoresFolgaAmanha = colaboradores.filter(c => Number(c.numeroFolga) === sequenciaAmanha);
   
   const byEquipamento = colaboradoresFolgaAmanha.reduce((acc, colab) => {
     if (!acc[colab.equipamento]) acc[colab.equipamento] = [];

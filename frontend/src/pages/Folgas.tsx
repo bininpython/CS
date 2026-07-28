@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Download, Plus, X, Clock, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CheckCircle2, XCircle, Search, Filter, Download, Plus, X, Clock } from 'lucide-react';
 import { useApp } from '../App';
+import { supabase } from '../lib/supabase';
 
 export const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -10,29 +11,7 @@ export const MONTH_NAMES = [
 export const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 export const YEAR = 2026;
 
-// Lista de Colaboradores baseada na aba Colaboradores
-export const COLABORADORES = [
-  { id: '1', nome: 'LUCAS DOS SANTOS MORAIS', equipamento: 'RB4', numeroFolga: 2 },
-  { id: '2', nome: 'FLEWDSON CAMPOS DOS SANTOS', equipamento: 'RB4', numeroFolga: 4 },
-  { id: '3', nome: 'WILDSON JUNIO RODRIGUES DINIZ', equipamento: 'RB4', numeroFolga: 3 },
-  { id: '4', nome: 'TULYO FERREIRA SILVA NESCAU', equipamento: 'RB4', numeroFolga: 1 },
-  { id: '5', nome: 'JOÃO PAULO', equipamento: 'RB4', numeroFolga: 2 },
-  { id: '6', nome: 'ÍTALO MIRANDA DE RAMOS', equipamento: 'RB4', numeroFolga: 1 },
-  { id: '7', nome: 'ABNER LUCAS ALMEIDA PASSOS', equipamento: 'RB1', numeroFolga: 1 },
-  { id: '8', nome: 'TALES JACOB DE SOUZA', equipamento: 'RB1', numeroFolga: 1 },
-  { id: '9', nome: 'LETICIA DO CARMO FIALHO', equipamento: 'OUTRO', numeroFolga: 3 },
-  { id: '10', nome: 'RAFAEL HENRIQUE OLIVEIRA LINHARES', equipamento: 'RB1', numeroFolga: 4 },
-  { id: '11', nome: 'WILLIAM JUNIO SIMÕES', equipamento: 'LE1', numeroFolga: 2 },
-  { id: '12', nome: 'ISRAEL LUCAS FREITAS NUNES', equipamento: 'RB1', numeroFolga: 4 },
-  { id: '13', nome: 'DAVI FERREIRA LIMA', equipamento: 'RB1', numeroFolga: 4 },
-  { id: '14', nome: 'KELLEN YARA VIEIRA', equipamento: 'RB4', numeroFolga: 3 },
-  { id: '15', nome: 'RODRIGO CUNHA SOUZA', equipamento: 'LE1', numeroFolga: 1 },
-  { id: '16', nome: 'FERNANDA MORAIS VIRTUOSO', equipamento: 'LE1', numeroFolga: 3 },
-  { id: '17', nome: 'AMOS RAFAEL MARTINS DE ALMEIDA', equipamento: 'RB1', numeroFolga: 3 },
-  { id: '18', nome: 'JACQUELINE SILVA GARCIA', equipamento: 'RB4', numeroFolga: 4 },
-  { id: '19', nome: 'ALEXANDRE SILVA RODRIGUES', equipamento: 'RB1', numeroFolga: 2 },
-  { id: '20', nome: 'RODRIGO OLIVEIRA MOREIRA', equipamento: 'RB1', numeroFolga: 2 },
-];
+// Lista de Colaboradores será consumida do contexto (Supabase)
 
 interface FolgaManual {
   id: string;
@@ -77,28 +56,39 @@ const Folgas: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
 
-  const { solicitacoesFolga, setSolicitacoesFolga } = useApp();
+  const { solicitacoesFolga, setSolicitacoesFolga, colaboradores } = useApp();
 
-  const handleAprovarFolga = (idSolicitacao: string) => {
-    // 1. Atualizar status na solicitacao
-    setSolicitacoesFolga(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
-    
-    // 2. Procurar na base de colaboradores para injetar na folgaManual local
-    const sol = solicitacoesFolga.find(s => s.id === idSolicitacao);
-    if (sol) {
-      // Find the collaborator in COLABORADORES array by matching name, to get its ID.
-      // This is necessary because in ColaboradorFolgas we just mocked the colabId.
-      const colab = COLABORADORES.find(c => c.nome.toUpperCase() === sol.nome.toUpperCase());
-      const cId = colab ? colab.id : ('mock-' + sol.id);
+  const handleAprovarFolga = async (idSolicitacao: string) => {
+    const { error } = await supabase.from('solicitacoes_folga')
+      .update({ status: 'Aprovado' })
+      .eq('id', idSolicitacao);
 
-      const newFolga: FolgaManual = {
-        id: sol.id,
-        colaboradorId: cId,
-        data: sol.data,
-        tipo: 'Folga Solicitada (Aprovado)',
-        motivo: sol.motivo
-      };
-      setFolgasManuais(prev => [...prev, newFolga]);
+    if (!error) {
+      setSolicitacoesFolga(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Aprovado' } : s));
+      
+      const sol = solicitacoesFolga.find(s => s.id === idSolicitacao);
+      if (sol) {
+        const colab = colaboradores.find(c => c.nome.toUpperCase() === sol.nome.toUpperCase());
+        const cId = colab ? colab.id : ('mock-' + sol.id);
+        const newFolga: FolgaManual = {
+          id: sol.id,
+          colaboradorId: cId,
+          data: sol.data,
+          tipo: 'Folga Solicitada (Aprovado)',
+          motivo: sol.motivo
+        };
+        setFolgasManuais(prev => [...prev, newFolga]);
+      }
+    }
+  };
+
+  const handleRecusarFolga = async (idSolicitacao: string) => {
+    const { error } = await supabase.from('solicitacoes_folga')
+      .update({ status: 'Recusado' })
+      .eq('id', idSolicitacao);
+
+    if (!error) {
+      setSolicitacoesFolga(prev => prev.map(s => s.id === idSolicitacao ? { ...s, status: 'Recusado' } : s));
     }
   };
 
@@ -117,45 +107,55 @@ const Folgas: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleAddFolga = (e: React.FormEvent) => {
+  const handleAddFolga = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formColaborador) return;
 
-    const newFolga: FolgaManual = {
-      id: Date.now().toString(),
-      colaboradorId: formColaborador,
-      data: selectedDate,
-      tipo: formTipo,
-      motivo: formMotivo
-    };
+    const colab = colaboradores.find(c => c.id === formColaborador);
+    if (!colab) return;
 
-    setFolgasManuais([...folgasManuais, newFolga]);
-    
-    // Reset form
-    setFormColaborador('');
-    setFormMotivo('');
-    setFormTipo('Ajuste de Folga');
-    setIsModalOpen(false);
+    const { error, data } = await supabase.from('solicitacoes_folga').insert({
+      colaborador_id: formColaborador,
+      nome: colab.nome,
+      turno: 'Manual',
+      equipamento: colab.equipamento,
+      data: selectedDate,
+      status: 'Aprovado',
+      motivo: formMotivo || formTipo
+    }).select();
+
+    if (!error && data) {
+      const newFolga: FolgaManual = {
+        id: data[0].id,
+        colaboradorId: formColaborador,
+        data: selectedDate,
+        tipo: formTipo,
+        motivo: formMotivo
+      };
+      setFolgasManuais([...folgasManuais, newFolga]);
+      setSolicitacoesFolga([...solicitacoesFolga, data[0]]);
+      setIsModalOpen(false);
+      setFormColaborador('');
+      setFormMotivo('');
+    }
   };
 
   const getFolgasForDay = (day: number) => {
     const date = new Date(YEAR, selectedMonth, day);
     const formattedDate = `${YEAR}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
-    // 1. Folgas Inteligentes (Automáticas da Escala 6x2) apenas de Agosto em diante
     let autoFolgas: any[] = [];
     if (selectedMonth >= 7) {
       const folgaSequence = getSequenceForDay(date);
-      autoFolgas = COLABORADORES.filter(c => c.numeroFolga === folgaSequence).map(c => ({
+      autoFolgas = colaboradores.filter(c => Number(c.numeroFolga) === folgaSequence).map(c => ({
         ...c,
         isAuto: true,
         tipo: `Folga Sequência ${c.numeroFolga}`
       }));
     }
 
-    // 2. Folgas Manuais / Ajustes
     const manuais = folgasManuais.filter(f => f.data === formattedDate).map(f => {
-      const c = COLABORADORES.find(col => col.id === f.colaboradorId);
+      const c = colaboradores.find(col => col.id === f.colaboradorId);
       return {
         ...c!,
         isAuto: false,
@@ -168,7 +168,6 @@ const Folgas: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full w-full min-w-0">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 flex-shrink-0">
         <div>
           <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
@@ -191,7 +190,6 @@ const Folgas: React.FC = () => {
         </div>
       </div>
 
-      {/* Solicitações Pendentes */}
       {solicitacoesFolga.filter(s => s.status === 'Pendente').length > 0 && (
         <div className="mb-6 bg-orange-50 border-2 border-orange-500 p-4 shadow-[4px_4px_0px_0px_rgba(249,115,22,1)] flex-shrink-0">
           <div className="flex items-center gap-2 mb-4">
@@ -207,12 +205,22 @@ const Folgas: React.FC = () => {
                   <p className="text-sm text-black font-bold uppercase mt-3 bg-orange-100 p-2 inline-block">Data: {sol.data.split('-').reverse().join('/')}</p>
                   <p className="text-[10px] text-gray-500 mt-2 line-clamp-2 uppercase">Motivo: {sol.motivo}</p>
                 </div>
-                <button 
-                  onClick={() => handleAprovarFolga(sol.id)}
-                  className="mt-4 w-full bg-[#FF9900] text-white font-bold uppercase tracking-widest py-2 flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors"
-                >
-                  <CheckCircle2 size={16} /> Aprovar Folga
-                </button>
+                <div className="flex gap-2 mt-4 justify-end">
+                  <button 
+                    onClick={() => handleAprovarFolga(sol.id)}
+                    className="p-1.5 text-black hover:bg-[#00FF00] hover:text-black transition-colors rounded-sm border-2 border-transparent hover:border-black"
+                    title="Aprovar"
+                  >
+                    <CheckCircle2 size={18} />
+                  </button>
+                  <button 
+                    onClick={() => handleRecusarFolga(sol.id)}
+                    className="p-1.5 text-black hover:bg-red-500 hover:text-white transition-colors rounded-sm border-2 border-transparent hover:border-black"
+                    title="Recusar"
+                  >
+                    <XCircle size={18} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -373,7 +381,7 @@ const Folgas: React.FC = () => {
                       required
                     >
                       <option value="">Selecione um colaborador...</option>
-                      {COLABORADORES.map(c => (
+                      {colaboradores.map(c => (
                         <option key={c.id} value={c.id}>{c.nome} ({c.equipamento})</option>
                       ))}
                     </select>
