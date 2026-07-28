@@ -116,13 +116,16 @@ const Folgas: React.FC = () => {
     const date = new Date(YEAR, selectedMonth, day);
     const formattedDate = `${YEAR}-${String(selectedMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
-    // 1. Folgas Inteligentes (Automáticas da Escala 6x2)
-    const folgaSequence = getSequenceForDay(date);
-    const autoFolgas = COLABORADORES.filter(c => c.numeroFolga === folgaSequence).map(c => ({
-      ...c,
-      isAuto: true,
-      tipo: `Folga Sequência ${c.numeroFolga}`
-    }));
+    // 1. Folgas Inteligentes (Automáticas da Escala 6x2) apenas de Agosto em diante
+    let autoFolgas: any[] = [];
+    if (selectedMonth >= 7) {
+      const folgaSequence = getSequenceForDay(date);
+      autoFolgas = COLABORADORES.filter(c => c.numeroFolga === folgaSequence).map(c => ({
+        ...c,
+        isAuto: true,
+        tipo: `Folga Sequência ${c.numeroFolga}`
+      }));
+    }
 
     // 2. Folgas Manuais / Ajustes
     const manuais = folgasManuais.filter(f => f.data === formattedDate).map(f => {
@@ -172,7 +175,7 @@ const Folgas: React.FC = () => {
           </div>
         ))}
         <div className="flex items-center gap-2 ml-auto">
-          <div className="w-4 h-4 border bg-yellow-100 border-yellow-400"></div>
+          <div className="w-4 h-4 border-2 bg-yellow-400 border-yellow-600"></div>
           <span className="text-xs font-bold uppercase text-gray-700">Ajuste Manual / Exceção</span>
         </div>
       </div>
@@ -241,7 +244,7 @@ const Folgas: React.FC = () => {
                   {folgas.map((folga, idx) => {
                     const colorClass = folga.isAuto 
                       ? getSequenceColor(folga.numeroFolga)
-                      : 'bg-yellow-100 text-yellow-800 border-yellow-400';
+                      : 'bg-yellow-400 text-black border-yellow-600 border-2 font-extrabold';
 
                     return (
                       <div 
