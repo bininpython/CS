@@ -59,11 +59,11 @@ const PostosDeTrabalho: React.FC = () => {
 
   const getSequenceColor = (seq: number) => {
     switch (seq) {
-      case 1: return 'bg-[#00FF00] text-black border-black'; // Verde
-      case 2: return 'bg-[#ffea00] text-black border-black'; // Amarelo
-      case 3: return 'bg-[#FF9900] text-black border-black'; // Laranja
-      case 4: return 'bg-black text-white border-black'; // Preto
-      default: return 'bg-white text-black border-black';
+      case 1: return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 2: return 'bg-orange-100 text-orange-800 border-orange-300';
+      case 3: return 'bg-pink-100 text-pink-800 border-pink-300';
+      case 4: return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+      default: return 'bg-gray-100 text-gray-800 border-gray-300';
     }
   };
 
