@@ -28,7 +28,7 @@ interface Empregado {
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
 const INITIAL_DATA: Empregado[] = [
-  // RB4 (Dados RB3)
+  // RB4
   { id: generateId(), r3: '1009384', nome: 'LUCAS DOS SANTOS MORAIS', periodoAquisitivo: '17/11/2026', hist2024: { mes: 'JUL', pontos: 1 }, hist2025: { mes: 'MAI', pontos: 8 }, hist2026: { mes: 'MAI', pontos: 8 }, opcoes: [{ mes: 'MAI', color: 'white' }, { mes: 'JUL', color: 'white' }, { mes: 'OUT', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
   { id: generateId(), r3: '1004162', nome: 'FLEWDSON CAMPOS DOS SANTOS', periodoAquisitivo: '14/03/2026', hist2024: { mes: 'FEV', pontos: 2 }, hist2025: { mes: 'FEV', pontos: 2 }, hist2026: { mes: 'FEV', pontos: 2 }, opcoes: [{ mes: 'FEV', color: 'white' }, { mes: '', color: 'white' }, { mes: '', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
   { id: generateId(), r3: '1007155', nome: 'WILDSON JUNIOR RODRIGUES DINIZ', periodoAquisitivo: '10/06/2026', hist2024: { mes: 'AGO', pontos: 10 }, hist2025: { mes: 'AGO', pontos: 10 }, hist2026: { mes: 'OUT', pontos: 10 }, opcoes: [{ mes: 'AGO', color: 'white' }, { mes: 'OUT', color: 'white' }, { mes: 'SET', color: 'white' }], dataFerias: '', observacao: '', equipe: 'RB4' },
@@ -91,27 +91,27 @@ const Ferias: React.FC = () => {
     });
   }, [activeTab, dados]);
 
-  const getPointsBadge = (pontos: number) => {
-    if (pontos === 0) return <span className="text-muted">-</span>;
-    if (pontos >= 1 && pontos <= 2) return <span className="inline-block px-1.5 py-0.5 bg-green-100 text-green-700 font-bold rounded-sm text-[10px]">{pontos}</span>;
-    if (pontos >= 3 && pontos <= 7) return <span className="inline-block px-1.5 py-0.5 bg-yellow-100 text-yellow-700 font-bold rounded-sm text-[10px]">{pontos}</span>;
-    if (pontos >= 8 && pontos <= 10) return <span className="inline-block px-1.5 py-0.5 bg-red-100 text-red-700 font-bold rounded-sm text-[10px]">{pontos}</span>;
-    return <span>{pontos}</span>;
+  const getPointsClass = (pontos: number) => {
+    if (pontos === 0) return 'text-black';
+    if (pontos >= 1 && pontos <= 2) return 'text-green-600 font-bold';
+    if (pontos >= 3 && pontos <= 7) return 'text-yellow-500 font-bold';
+    if (pontos >= 8 && pontos <= 10) return 'text-red-600 font-bold';
+    return 'text-black';
   };
 
   const getOptionBadge = (mes: string, color: string) => {
-    if (!mes) return <span className="text-muted">-</span>;
+    if (!mes) return <span className="text-gray-400">-</span>;
     
-    let colorClasses = "bg-gray-100 text-muted"; // default/white
+    let colorClasses = "bg-white text-black border border-gray-300"; // default/white
     switch (color) {
-      case 'orange': colorClasses = 'bg-[#FF9900] text-white'; break;
-      case 'blue': colorClasses = 'bg-[#3b82f6] text-white'; break;
-      case 'yellow': colorClasses = 'bg-[#ffea00] text-black'; break;
-      case 'pink': colorClasses = 'bg-[#ffcdd2] text-black'; break;
+      case 'orange': colorClasses = 'bg-[#FF9900] text-white border-[#FF9900]'; break;
+      case 'blue': colorClasses = 'bg-[#3b82f6] text-white border-[#3b82f6]'; break;
+      case 'yellow': colorClasses = 'bg-[#ffea00] text-black border-[#ffea00] font-bold'; break;
+      case 'pink': colorClasses = 'bg-[#ffcdd2] text-black border-[#ffcdd2]'; break;
     }
     
     return (
-      <span className={`inline-block px-2 py-0.5 text-[9px] font-bold uppercase rounded-sm tracking-wide ${colorClasses}`}>
+      <span className={`inline-block w-full py-1 text-[10px] font-bold uppercase rounded-sm ${colorClasses}`}>
         {mes}
       </span>
     );
@@ -161,32 +161,29 @@ const Ferias: React.FC = () => {
     <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative">
       <div className="flex items-center justify-between mb-6 flex-shrink-0">
         <div>
-          <h1 className="text-xl font-semibold text-foreground">Histórico de Férias</h1>
-          <p className="text-sm text-muted mt-0.5">Acompanhamento e priorização de solicitações</p>
+          <h1 className="text-2xl font-bold text-black uppercase tracking-wide">Controle de Férias</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Histórico, pontuações e programação - Visão Consolidada</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
             onClick={handleNew}
-            className="flex items-center gap-2 text-sm text-white bg-purple px-4 py-2 hover:bg-purpleHover transition-colors font-medium rounded-sm"
+            className="flex items-center gap-2 text-sm text-white bg-black px-5 py-2.5 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider"
           >
-            <Plus size={16} /> Adicionar Colaborador
-          </button>
-          <button className="flex items-center gap-2 text-sm text-foreground border border-border px-4 py-2 hover:bg-gray-50 transition-colors font-medium rounded-sm bg-white">
-            <Download size={16} /> Exportar
+            <Plus size={16} /> Novo Colaborador
           </button>
         </div>
       </div>
 
-      {/* Abas de Equipamentos */}
-      <div className="flex items-center gap-2 mb-4 overflow-x-auto flex-shrink-0">
+      {/* Abas de Equipamentos - Design Limpo Minimalista */}
+      <div className="flex items-center gap-0 mb-6 border-b-2 border-black flex-shrink-0">
         {['RB1', 'LE1', 'RB4'].map((equip) => (
           <button
             key={equip}
             onClick={() => setActiveTab(equip as any)}
-            className={`px-6 py-2 text-xs font-semibold uppercase tracking-wider transition-colors border ${
+            className={`px-8 py-3 text-sm font-bold uppercase tracking-widest transition-colors ${
               activeTab === equip
-                ? 'bg-purple/10 border-purple text-purple'
-                : 'bg-white border-border text-muted hover:text-foreground hover:bg-gray-50'
+                ? 'bg-black text-white'
+                : 'bg-white text-black hover:bg-gray-100 border-x border-t border-transparent hover:border-gray-200'
             }`}
           >
             EQUIPE {equip}
@@ -194,112 +191,114 @@ const Ferias: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-white border border-border w-full flex-1 overflow-hidden flex flex-col shadow-sm">
-        <div className="overflow-x-auto w-full max-w-full">
-          <table className="text-[10px] sm:text-[11px] border-collapse min-w-[1250px] w-full text-left">
+      <div className="w-full flex-1 overflow-hidden flex flex-col bg-white">
+        <div className="overflow-x-auto w-full max-w-full pb-4">
+          <table className="text-xs border-collapse min-w-[1300px] w-full text-center border-2 border-black bg-white">
             <thead>
-              {/* ROW 1: Group Headers */}
-              <tr className="bg-gray-50 border-b border-border">
-                <th colSpan={3} className="px-4 py-2.5 font-bold uppercase tracking-wider text-muted border-r border-border">Informações Básicas</th>
-                <th colSpan={6} className="px-4 py-2.5 font-bold uppercase tracking-wider text-muted border-r border-border text-center">Banco de Dados - Histórico</th>
-                <th colSpan={2} className="px-4 py-2.5 font-bold uppercase tracking-wider text-muted border-r border-border text-center">Ranqueamento</th>
-                <th colSpan={3} className="px-4 py-2.5 font-bold uppercase tracking-wider text-muted border-r border-border text-center">Opções para Próximas Férias</th>
-                <th colSpan={3} className="px-4 py-2.5 font-bold uppercase tracking-wider text-muted text-center">Complementar</th>
+              {/* ROW 1: Group Headers com linhas fortes */}
+              <tr className="border-b-2 border-black bg-gray-50">
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
+                  Identificação
+                </th>
+                <th colSpan={6} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
+                  Histórico (Anos)
+                </th>
+                <th colSpan={2} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
+                  Classificação
+                </th>
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
+                  Programação
+                </th>
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black">
+                  Status
+                </th>
               </tr>
 
               {/* ROW 2: Column Headers */}
-              <tr className="bg-white border-b border-border text-muted uppercase tracking-wider">
-                <th className="px-4 py-3 font-semibold text-center border-r border-gray-100">R3</th>
-                <th className="px-4 py-3 font-semibold border-r border-gray-100">Empregado</th>
-                <th className="px-4 py-3 font-semibold text-center border-r border-border">Aquisitivo</th>
+              <tr className="border-b-2 border-black bg-white text-black font-bold uppercase">
+                <th className="px-3 py-3 border-r border-black w-24">R3</th>
+                <th className="px-3 py-3 border-r border-black text-left">Empregado</th>
+                <th className="px-3 py-3 border-r-2 border-black w-28">Período Aquis.</th>
                 
                 {/* 2024 */}
-                <th className="px-3 py-3 font-semibold text-center bg-gray-50/50">Mês 24</th>
-                <th className="px-3 py-3 font-semibold text-center bg-gray-50/50 border-r border-gray-100">Pts</th>
+                <th className="px-2 py-3 border-r border-gray-300 w-16">2024</th>
+                <th className="px-2 py-3 border-r border-black w-14">Pts</th>
                 
                 {/* 2025 */}
-                <th className="px-3 py-3 font-semibold text-center">Mês 25</th>
-                <th className="px-3 py-3 font-semibold text-center border-r border-gray-100">Pts</th>
+                <th className="px-2 py-3 border-r border-gray-300 w-16">2025</th>
+                <th className="px-2 py-3 border-r border-black w-14">Pts</th>
 
                 {/* 2026 */}
-                <th className="px-3 py-3 font-semibold text-center bg-gray-50/50">Mês 26</th>
-                <th className="px-3 py-3 font-semibold text-center bg-gray-50/50 border-r border-border">Pts</th>
+                <th className="px-2 py-3 border-r border-gray-300 w-16">2026</th>
+                <th className="px-2 py-3 border-r-2 border-black w-14">Pts</th>
 
                 {/* Totais */}
-                <th className="px-3 py-3 font-semibold text-center border-r border-gray-100">Total</th>
-                <th className="px-3 py-3 font-semibold text-center border-r border-border">Prio</th>
+                <th className="px-3 py-3 border-r border-black w-16">Total</th>
+                <th className="px-3 py-3 border-r-2 border-black w-16 bg-gray-100">Prior.</th>
 
                 {/* Opcoes */}
-                <th className="px-3 py-3 font-semibold text-center">1ª Opção</th>
-                <th className="px-3 py-3 font-semibold text-center border-x border-gray-100">2ª Opção</th>
-                <th className="px-3 py-3 font-semibold text-center border-r border-border">3ª Opção</th>
+                <th className="px-2 py-3 border-r border-black w-20">1ª Opção</th>
+                <th className="px-2 py-3 border-r border-black w-20">2ª Opção</th>
+                <th className="px-2 py-3 border-r-2 border-black w-20">3ª Opção</th>
 
                 {/* Complementar */}
-                <th className="px-4 py-3 font-semibold text-center border-r border-gray-100">Data Fechada</th>
-                <th className="px-4 py-3 font-semibold border-r border-gray-100">Observação</th>
-                <th className="px-3 py-3 font-semibold text-center w-12">Ações</th>
+                <th className="px-3 py-3 border-r border-black w-28">Data Prevista</th>
+                <th className="px-3 py-3 border-r border-black text-left">Observações</th>
+                <th className="px-3 py-3 w-12">Editar</th>
               </tr>
             </thead>
             
-            <tbody>
+            <tbody className="text-black font-medium">
               {colaboradoresCalculados.length === 0 ? (
                 <tr>
-                  <td colSpan={17} className="text-center py-10 text-muted font-medium bg-white">
-                    Nenhum colaborador registrado na {activeTab}.
+                  <td colSpan={17} className="text-center py-10 text-gray-500 bg-white">
+                    Nenhum colaborador registrado.
                   </td>
                 </tr>
               ) : (
                 colaboradoresCalculados.map((emp) => (
-                  <tr key={emp.id} className="border-b border-border hover:bg-gray-50/80 transition-colors group">
-                    <td className="px-4 py-3 text-center text-muted font-medium border-r border-gray-100">{emp.r3}</td>
-                    <td className="px-4 py-3 text-foreground font-semibold whitespace-nowrap border-r border-gray-100">{emp.nome}</td>
-                    <td className="px-4 py-3 text-center border-r border-border">
-                      {emp.periodoAquisitivo ? (
-                        <span className="inline-block px-2 py-1 bg-green-100 text-green-700 font-bold text-[10px] rounded-sm">
-                          {emp.periodoAquisitivo}
-                        </span>
-                      ) : '-'}
-                    </td>
+                  <tr key={emp.id} className="border-b border-black hover:bg-gray-50 transition-colors group">
+                    <td className="px-3 py-2.5 border-r border-black">{emp.r3}</td>
+                    <td className="px-3 py-2.5 border-r border-black text-left font-bold">{emp.nome}</td>
+                    <td className="px-3 py-2.5 border-r-2 border-black bg-green-200 font-bold">{emp.periodoAquisitivo || '-'}</td>
                     
                     {/* 2024 */}
-                    <td className="px-3 py-3 text-center uppercase text-muted font-medium bg-gray-50/30">{emp.hist2024.mes || '-'}</td>
-                    <td className="px-3 py-3 text-center border-r border-gray-100 bg-gray-50/30">{getPointsBadge(emp.hist2024.pontos)}</td>
+                    <td className="px-2 py-2.5 border-r border-gray-300 uppercase">{emp.hist2024.mes || '-'}</td>
+                    <td className={`px-2 py-2.5 border-r border-black text-base ${getPointsClass(emp.hist2024.pontos)}`}>{emp.hist2024.pontos}</td>
                     
                     {/* 2025 */}
-                    <td className="px-3 py-3 text-center uppercase text-muted font-medium">{emp.hist2025.mes || '-'}</td>
-                    <td className="px-3 py-3 text-center border-r border-gray-100">{getPointsBadge(emp.hist2025.pontos)}</td>
+                    <td className="px-2 py-2.5 border-r border-gray-300 uppercase">{emp.hist2025.mes || '-'}</td>
+                    <td className={`px-2 py-2.5 border-r border-black text-base ${getPointsClass(emp.hist2025.pontos)}`}>{emp.hist2025.pontos}</td>
 
                     {/* 2026 */}
-                    <td className="px-3 py-3 text-center uppercase text-muted font-medium bg-gray-50/30">{emp.hist2026.mes || '-'}</td>
-                    <td className="px-3 py-3 text-center border-r border-border bg-gray-50/30">{getPointsBadge(emp.hist2026.pontos)}</td>
+                    <td className="px-2 py-2.5 border-r border-gray-300 uppercase">{emp.hist2026.mes || '-'}</td>
+                    <td className={`px-2 py-2.5 border-r-2 border-black text-base ${getPointsClass(emp.hist2026.pontos)}`}>{emp.hist2026.pontos}</td>
 
                     {/* Totais */}
-                    <td className="px-3 py-3 text-center font-bold text-foreground border-r border-gray-100">{emp.total}</td>
-                    <td className="px-3 py-3 text-center border-r border-border">
-                      <span className="inline-flex items-center justify-center w-6 h-6 bg-purple/10 text-purple font-bold rounded-sm text-xs">
-                        {emp.prioridade}º
-                      </span>
+                    <td className="px-3 py-2.5 border-r border-black text-base font-bold bg-gray-50">{emp.total}</td>
+                    <td className="px-3 py-2.5 border-r-2 border-black font-bold text-base bg-black text-white">
+                      {emp.prioridade}º
                     </td>
 
                     {/* Opcoes */}
                     {emp.opcoes.map((opt, idx) => (
-                      <td key={idx} className={`px-3 py-3 text-center ${idx === 1 ? 'border-x border-gray-100' : ''} ${idx === 2 ? 'border-r border-border' : ''}`}>
+                      <td key={idx} className={`px-2 py-2.5 ${idx === 2 ? 'border-r-2 border-black' : 'border-r border-black'}`}>
                         {getOptionBadge(opt.mes, opt.color)}
                       </td>
                     ))}
 
                     {/* Finais */}
-                    <td className="px-4 py-3 text-center text-muted font-medium border-r border-gray-100">{emp.dataFerias || '-'}</td>
-                    <td className="px-4 py-3 text-xs text-muted max-w-[200px] truncate border-r border-gray-100" title={emp.observacao}>
+                    <td className="px-3 py-2.5 border-r border-black">{emp.dataFerias || '-'}</td>
+                    <td className="px-3 py-2.5 border-r border-black text-left text-[11px] max-w-[200px] truncate" title={emp.observacao}>
                       {emp.observacao || '-'}
                     </td>
-                    <td className="px-3 py-3 text-center">
+                    <td className="px-3 py-2.5 text-center bg-gray-50">
                       <button 
                         onClick={() => handleEdit(emp)}
-                        className="p-1.5 text-muted hover:text-purple hover:bg-purple/10 rounded transition-colors flex items-center justify-center mx-auto opacity-0 group-hover:opacity-100 focus:opacity-100"
-                        title="Editar"
+                        className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-200 transition-colors flex items-center justify-center mx-auto rounded-sm"
+                        title="Editar Linha"
                       >
-                        <Edit2 size={14} />
+                        <Edit2 size={16} />
                       </button>
                     </td>
                   </tr>
@@ -310,116 +309,84 @@ const Ferias: React.FC = () => {
         </div>
       </div>
 
-      {/* MODAL DE EDIÇÃO / CRIAÇÃO */}
+      {/* MODAL MANTÉM DESIGN LIMPO */}
       {modalOpen && formData && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col shadow-2xl">
-            {/* Header */}
-            <div className="border-b border-border p-5 flex justify-between items-center sticky top-0 z-10 bg-white">
-              <h2 className="text-lg font-semibold text-foreground">
-                {formData.id ? 'Editar Colaborador' : 'Novo Colaborador'} <span className="text-muted text-sm font-normal ml-2">/ EQUIPE {activeTab}</span>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto flex flex-col border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
+            <div className="border-b-2 border-black p-5 flex justify-between items-center sticky top-0 z-10 bg-white">
+              <h2 className="text-xl font-bold uppercase tracking-wider text-black">
+                {formData.id ? 'Editar Colaborador' : 'Novo Colaborador'} - EQUIPE {activeTab}
               </h2>
-              <button onClick={() => setModalOpen(false)} className="p-1 text-muted hover:text-foreground hover:bg-gray-100 rounded transition-colors">
-                <X size={20} />
+              <button onClick={() => setModalOpen(false)} className="p-1 text-black hover:bg-gray-200 transition-colors">
+                <X size={24} />
               </button>
             </div>
 
-            {/* Body */}
             <form onSubmit={handleSaveModal} className="p-6 flex flex-col gap-8">
-              {/* Seção: Identificação */}
+              {/* Identificação */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted">R3 (Matrícula)</label>
-                  <input required type="text" value={formData.r3} onChange={e => handleFormChange('r3', e.target.value)} className="border border-border bg-white px-3 py-2 text-sm outline-none focus:border-purple focus:ring-1 focus:ring-purple transition-shadow" />
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-black">R3 (Matrícula)</label>
+                  <input required type="text" value={formData.r3} onChange={e => handleFormChange('r3', e.target.value)} className="border-2 border-black bg-white px-3 py-2 font-medium outline-none focus:bg-gray-50" />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted">Nome Completo</label>
-                  <input required type="text" value={formData.nome} onChange={e => handleFormChange('nome', e.target.value)} className="border border-border bg-white px-3 py-2 text-sm outline-none focus:border-purple focus:ring-1 focus:ring-purple transition-shadow uppercase" />
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-black">Nome Completo</label>
+                  <input required type="text" value={formData.nome} onChange={e => handleFormChange('nome', e.target.value)} className="border-2 border-black bg-white px-3 py-2 font-bold outline-none focus:bg-gray-50 uppercase" />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted">Período Aquisitivo</label>
-                  <input type="text" value={formData.periodoAquisitivo} onChange={e => handleFormChange('periodoAquisitivo', e.target.value)} className="border border-border bg-white px-3 py-2 text-sm outline-none focus:border-purple focus:ring-1 focus:ring-purple transition-shadow" placeholder="Ex: 15/11/2026" />
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-black">Período Aquisitivo</label>
+                  <input type="text" value={formData.periodoAquisitivo} onChange={e => handleFormChange('periodoAquisitivo', e.target.value)} className="border-2 border-black bg-green-100 px-3 py-2 font-bold outline-none focus:bg-green-200" placeholder="Ex: 15/11/2026" />
                 </div>
               </div>
 
-              <div className="h-px bg-border w-full"></div>
+              <div className="h-0.5 bg-black w-full"></div>
 
-              {/* Seção: Histórico */}
+              {/* Histórico */}
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-4">Histórico de Férias</h3>
+                <h3 className="text-lg font-bold uppercase text-black mb-4">Histórico de Férias</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* 2024 */}
-                  <div className="border border-border rounded-sm p-4 bg-gray-50/50">
-                    <h4 className="font-semibold text-center mb-4 text-xs text-muted uppercase tracking-wider">Ano 2024</h4>
-                    <div className="flex gap-4">
-                      <div className="flex-1 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Mês</label>
-                        <select value={formData.hist2024.mes} onChange={e => handleFormChange('hist2024.mes', e.target.value)} className="border border-border p-2 outline-none text-sm bg-white focus:border-purple">
-                          {MESES.map(m => <option key={m} value={m}>{m}</option>)}
-                        </select>
+                  {['2024', '2025', '2026'].map((ano, i) => {
+                    const histKey = `hist${ano}` as 'hist2024'|'hist2025'|'hist2026';
+                    return (
+                      <div key={ano} className="border-2 border-black p-4 bg-gray-50">
+                        <h4 className="font-bold text-center mb-4 text-sm text-black uppercase tracking-widest">{ano}</h4>
+                        <div className="flex gap-4">
+                          <div className="flex-1 flex flex-col gap-2">
+                            <label className="text-[10px] uppercase font-bold text-gray-600">Mês</label>
+                            <select value={formData[histKey].mes} onChange={e => handleFormChange(`${histKey}.mes`, e.target.value)} className="border-2 border-black p-2 outline-none text-sm font-bold bg-white">
+                              {MESES.map(m => <option key={m} value={m}>{m}</option>)}
+                            </select>
+                          </div>
+                          <div className="w-20 flex flex-col gap-2">
+                            <label className="text-[10px] uppercase font-bold text-gray-600">Pontos</label>
+                            <input type="number" min="0" value={formData[histKey].pontos} onChange={e => handleFormChange(`${histKey}.pontos`, Number(e.target.value))} className="border-2 border-black p-2 outline-none text-center font-bold text-sm bg-white" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="w-20 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Pontos</label>
-                        <input type="number" min="0" value={formData.hist2024.pontos} onChange={e => handleFormChange('hist2024.pontos', Number(e.target.value))} className="border border-border p-2 outline-none text-center text-sm bg-white focus:border-purple" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2025 */}
-                  <div className="border border-border rounded-sm p-4 bg-gray-50/50">
-                    <h4 className="font-semibold text-center mb-4 text-xs text-muted uppercase tracking-wider">Ano 2025</h4>
-                    <div className="flex gap-4">
-                      <div className="flex-1 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Mês</label>
-                        <select value={formData.hist2025.mes} onChange={e => handleFormChange('hist2025.mes', e.target.value)} className="border border-border p-2 outline-none text-sm bg-white focus:border-purple">
-                          {MESES.map(m => <option key={m} value={m}>{m}</option>)}
-                        </select>
-                      </div>
-                      <div className="w-20 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Pontos</label>
-                        <input type="number" min="0" value={formData.hist2025.pontos} onChange={e => handleFormChange('hist2025.pontos', Number(e.target.value))} className="border border-border p-2 outline-none text-center text-sm bg-white focus:border-purple" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 2026 */}
-                  <div className="border border-border rounded-sm p-4 bg-gray-50/50">
-                    <h4 className="font-semibold text-center mb-4 text-xs text-muted uppercase tracking-wider">Ano 2026</h4>
-                    <div className="flex gap-4">
-                      <div className="flex-1 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Mês</label>
-                        <select value={formData.hist2026.mes} onChange={e => handleFormChange('hist2026.mes', e.target.value)} className="border border-border p-2 outline-none text-sm bg-white focus:border-purple">
-                          {MESES.map(m => <option key={m} value={m}>{m}</option>)}
-                        </select>
-                      </div>
-                      <div className="w-20 flex flex-col gap-1.5">
-                        <label className="text-[10px] uppercase font-semibold text-muted">Pontos</label>
-                        <input type="number" min="0" value={formData.hist2026.pontos} onChange={e => handleFormChange('hist2026.pontos', Number(e.target.value))} className="border border-border p-2 outline-none text-center text-sm bg-white focus:border-purple" />
-                      </div>
-                    </div>
-                  </div>
+                    )
+                  })}
                 </div>
               </div>
 
-              <div className="h-px bg-border w-full"></div>
+              <div className="h-0.5 bg-black w-full"></div>
 
-              {/* Seção: Opções e Observações */}
+              {/* Opções e Observações */}
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-4">Planejamento Próximas Férias</h3>
+                <h3 className="text-lg font-bold uppercase text-black mb-4">Planejamento Próximas Férias</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                   {[0,1,2].map((idx) => (
-                    <div key={idx} className="border border-border rounded-sm p-4 bg-gray-50/50">
-                      <h4 className="font-semibold text-center mb-4 text-xs text-muted uppercase tracking-wider">{idx + 1}ª Opção</h4>
+                    <div key={idx} className="border-2 border-black p-4 bg-gray-50">
+                      <h4 className="font-bold text-center mb-4 text-sm text-black uppercase tracking-widest">{idx + 1}ª Opção</h4>
                       <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] uppercase font-semibold text-muted">Mês</label>
-                          <select value={formData.opcoes[idx].mes} onChange={e => handleFormChange(`opcoes.${idx}.mes`, e.target.value)} className="border border-border p-2 outline-none text-sm bg-white focus:border-purple">
+                        <div className="flex flex-col gap-2">
+                          <label className="text-[10px] uppercase font-bold text-gray-600">Mês</label>
+                          <select value={formData.opcoes[idx].mes} onChange={e => handleFormChange(`opcoes.${idx}.mes`, e.target.value)} className="border-2 border-black p-2 outline-none text-sm font-bold bg-white">
                             {MESES.map(m => <option key={m} value={m}>{m}</option>)}
                           </select>
                         </div>
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] uppercase font-semibold text-muted">Destaque de Cor</label>
-                          <select value={formData.opcoes[idx].color} onChange={e => handleFormChange(`opcoes.${idx}.color`, e.target.value)} className="border border-border p-2 outline-none text-sm bg-white focus:border-purple">
+                        <div className="flex flex-col gap-2">
+                          <label className="text-[10px] uppercase font-bold text-gray-600">Destaque de Cor</label>
+                          <select value={formData.opcoes[idx].color} onChange={e => handleFormChange(`opcoes.${idx}.color`, e.target.value)} className="border-2 border-black p-2 outline-none text-sm bg-white font-medium">
                             <option value="white">Sem Destaque</option>
                             <option value="orange">Laranja</option>
                             <option value="blue">Azul</option>
@@ -433,24 +400,24 @@ const Ferias: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-semibold uppercase tracking-wider text-muted">Data Programada (Opcional)</label>
-                    <input type="text" value={formData.dataFerias} onChange={e => handleFormChange('dataFerias', e.target.value)} className="border border-border bg-white px-3 py-2 text-sm outline-none focus:border-purple focus:ring-1 focus:ring-purple transition-shadow" />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Data Prevista (Opcional)</label>
+                    <input type="text" value={formData.dataFerias} onChange={e => handleFormChange('dataFerias', e.target.value)} className="border-2 border-black bg-white px-3 py-2 outline-none focus:bg-gray-50" />
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[11px] font-semibold uppercase tracking-wider text-muted">Observação (Opcional)</label>
-                    <input type="text" value={formData.observacao} onChange={e => handleFormChange('observacao', e.target.value)} className="border border-border bg-white px-3 py-2 text-sm outline-none focus:border-purple focus:ring-1 focus:ring-purple transition-shadow uppercase" />
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Observação (Opcional)</label>
+                    <input type="text" value={formData.observacao} onChange={e => handleFormChange('observacao', e.target.value)} className="border-2 border-black bg-white px-3 py-2 outline-none focus:bg-gray-50 uppercase" />
                   </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 mt-4 pt-6 border-t border-border">
-                <button type="button" onClick={() => setModalOpen(false)} className="px-6 py-2.5 text-sm font-semibold border border-border text-foreground hover:bg-gray-50 transition-colors rounded-sm">
+              <div className="flex justify-end gap-4 mt-2 pt-6 border-t-2 border-black">
+                <button type="button" onClick={() => setModalOpen(false)} className="px-8 py-3 text-sm font-bold uppercase tracking-widest border-2 border-black text-black hover:bg-gray-100 transition-colors">
                   Cancelar
                 </button>
-                <button type="submit" className="px-6 py-2.5 text-sm font-semibold border border-purple bg-purple hover:bg-purpleHover text-white transition-colors flex items-center gap-2 rounded-sm">
-                  <Save size={16} /> Salvar Dados
+                <button type="submit" className="px-8 py-3 text-sm font-bold uppercase tracking-widest border-2 border-black bg-[#00FF00] hover:bg-[#00cc00] text-black transition-colors flex items-center gap-2">
+                  <Save size={18} /> Salvar Dados
                 </button>
               </div>
             </form>
