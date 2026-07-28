@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar, XCircle } from 'lucide-react';
+import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar, XCircle, Search } from 'lucide-react';
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
 import { exportToPDF } from '../lib/pdfExport';
@@ -79,6 +79,7 @@ const Ferias: React.FC = () => {
   const [dados, setDados] = useState<Empregado[]>(INITIAL_DATA);
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState<Empregado | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   
   const { solicitacoesFerias, setSolicitacoesFerias } = useApp();
 
@@ -128,10 +129,13 @@ const Ferias: React.FC = () => {
   };
 
   const colaboradoresCalculados = useMemo(() => {
-    let tabData = dados.filter(emp => emp.equipe === activeTab).map(emp => {
-      const total = emp.hist2024.pontos + emp.hist2025.pontos + emp.hist2026.pontos;
-      return { ...emp, total };
-    });
+    let tabData = dados
+      .filter(emp => emp.equipe === activeTab)
+      .filter(emp => emp.nome.toLowerCase().includes(searchTerm.toLowerCase()) || emp.r3.includes(searchTerm))
+      .map(emp => {
+        const total = emp.hist2024.pontos + emp.hist2025.pontos + emp.hist2026.pontos;
+        return { ...emp, total };
+      });
 
     const sortedByTotal = [...tabData].sort((a, b) => b.total - a.total);
     

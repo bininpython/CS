@@ -5,7 +5,7 @@ import { MONTH_NAMES, WEEK_DAYS, YEAR, getSequenceForDay, getSequenceColor } fro
 import { supabase } from '../lib/supabase';
 
 const ColaboradorFolgas: React.FC = () => {
-  const { solicitacoesFolga, setSolicitacoesFolga } = useApp();
+  const { solicitacoesFolga, setSolicitacoesFolga, colaboradores } = useApp();
   
   // Form state
   const [nome, setNome] = useState('');
@@ -28,7 +28,7 @@ const ColaboradorFolgas: React.FC = () => {
     let autoFolgas: any[] = [];
     if (selectedMonth >= 7) {
       const folgaSequence = getSequenceForDay(date);
-      autoFolgas = COLABORADORES.filter(c => c.numeroFolga === folgaSequence).map(c => ({
+      autoFolgas = colaboradores.filter(c => Number(c.numeroFolga) === folgaSequence).map(c => ({
         ...c,
         isAuto: true,
         tipo: `Folga Sequência ${c.numeroFolga}`
