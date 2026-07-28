@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SUPERVISORS, useApp } from '../App';
-import { User } from 'lucide-react';
+import { User, Lock } from 'lucide-react';
 
 const SupervisorSelector: React.FC = () => {
   const navigate = useNavigate();
@@ -40,16 +40,23 @@ const SupervisorSelector: React.FC = () => {
           <p className="text-sm font-medium text-gray-500 mb-8 text-center uppercase tracking-wider">Escolha o perfil para gerenciar o turno</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {SUPERVISORS.map((sup) => (
-              <button
-                key={sup.id}
-                onClick={() => handleSupervisorSelect(sup.id)}
-                className="bg-white border-2 border-black p-8 flex flex-col items-center gap-2 hover:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] group"
-              >
-                <span className="text-xl font-bold text-black uppercase tracking-widest">{sup.name}</span>
-                <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">{sup.turn} ({sup.code})</span>
-              </button>
-            ))}
+            {SUPERVISORS.map((sup) => {
+              const isLocked = sup.name.toUpperCase() === 'PETRUS' || sup.name.toUpperCase() === 'AXEL';
+              return (
+                <button
+                  key={sup.id}
+                  onClick={() => !isLocked && handleSupervisorSelect(sup.id)}
+                  disabled={isLocked}
+                  className={`bg-white border-2 border-black p-8 flex flex-col items-center gap-2 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] relative ${
+                    isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 group'
+                  }`}
+                >
+                  {isLocked && <Lock size={20} className="absolute top-4 right-4 text-gray-500" />}
+                  <span className="text-xl font-bold text-black uppercase tracking-widest">{sup.name}</span>
+                  <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">{sup.turn} ({sup.code})</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 

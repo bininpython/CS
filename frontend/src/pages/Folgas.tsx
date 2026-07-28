@@ -186,10 +186,10 @@ const Folgas: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full w-full min-w-0">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 flex-shrink-0">
-        <div>
-          <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
-          <p className="text-xs md:text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between mb-6 gap-4 flex-shrink-0">
+        <div className="w-full xl:w-auto">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-black uppercase tracking-wide leading-tight break-words">Programação de Folgas</h1>
+          <p className="text-[10px] sm:text-xs md:text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
         </div>
           <div className="flex items-center gap-2 w-full md:w-auto">
             <button 
@@ -249,17 +249,19 @@ const Folgas: React.FC = () => {
       )}
 
       {/* Legenda das Folgas */}
-      <div className="flex flex-wrap items-center gap-4 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black w-full">
-        <span className="text-[10px] sm:text-sm font-bold uppercase tracking-widest text-black">Legenda de Cores:</span>
-        {[1, 2, 3, 4].map(seq => (
-          <div key={seq} className="flex items-center gap-2">
-            <div className={`w-4 h-4 border ${getSequenceColor(seq)}`}></div>
-            <span className="text-xs font-bold uppercase text-gray-700">Folga {seq}</span>
+      <div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black w-full text-xs">
+        <span className="font-bold uppercase tracking-widest text-black w-full sm:w-auto mb-2 sm:mb-0 block">Legenda de Cores:</span>
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          {[1, 2, 3, 4].map(seq => (
+            <div key={seq} className="flex items-center gap-1 sm:gap-2">
+              <div className={`w-3 h-3 sm:w-4 sm:h-4 border ${getSequenceColor(seq)}`}></div>
+              <span className="text-[10px] sm:text-xs font-bold uppercase text-gray-700 whitespace-nowrap">Folga {seq}</span>
+            </div>
+          ))}
+          <div className="flex items-center gap-1 sm:gap-2 border-l-0 sm:border-l-2 border-gray-200 pl-0 sm:pl-4">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 bg-yellow-400 border-yellow-600"></div>
+            <span className="text-[10px] sm:text-xs font-bold uppercase text-gray-700 whitespace-nowrap">Ajuste Manual / Exceção</span>
           </div>
-        ))}
-        <div className="flex items-center gap-2 mt-2 sm:mt-0 sm:ml-auto w-full sm:w-auto border-t-2 sm:border-t-0 border-gray-200 pt-2 sm:pt-0">
-          <div className="w-4 h-4 border-2 bg-yellow-400 border-yellow-600"></div>
-          <span className="text-[10px] sm:text-xs font-bold uppercase text-gray-700">Ajuste Manual / Exceção</span>
         </div>
       </div>
 
