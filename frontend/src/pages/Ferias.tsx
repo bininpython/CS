@@ -4,17 +4,17 @@ import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
 import { exportToPDF } from '../lib/pdfExport';
 
-interface HistoricoAno {
+export interface HistoricoAno {
   mes: string;
   pontos: number;
 }
 
-interface OpcaoFerias {
+export interface OpcaoFerias {
   mes: string;
   color: 'orange' | 'blue' | 'yellow' | 'pink' | 'white';
 }
 
-interface Empregado {
+export interface Empregado {
   id: string;
   r3: string;
   nome: string;
