@@ -198,21 +198,20 @@ const ColaboradorFolgas: React.FC = () => {
                   </span>
                 </div>
                 
-                {/* Folgas Chips */}
-                <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px] pr-1 custom-scrollbar">
-                  {folgas.map((folga, idx) => {
-                    const colorClass = getSequenceColor(folga.numeroFolga);
-                    return (
-                      <div 
-                        key={idx} 
-                        title={`${folga.tipo} - ${folga.nome}`}
-                        className={`text-[9px] px-1.5 py-1 font-bold truncate flex items-center justify-between border ${colorClass}`}
-                      >
-                        <span className="truncate uppercase">{folga.nome.split(' ')[0]} {folga.nome.split(' ')[1]}</span>
-                        <span className="text-[8px] opacity-80 ml-1 bg-white/50 px-1 rounded-sm">{folga.equipamento}</span>
-                      </div>
-                    );
-                  })}
+                {/* Indicador de Folga (Visão Colaborador) */}
+                <div className="flex flex-col gap-1 mt-1 flex-1 justify-center">
+                  {selectedMonth >= 7 && (() => {
+                    const seq = getSequenceForDay(new Date(YEAR, selectedMonth, day));
+                    if (seq > 0) {
+                      const colorClass = getSequenceColor(seq);
+                      return (
+                        <div className={`text-[10px] md:text-xs px-2 py-2 font-bold border-2 ${colorClass} text-center w-full`}>
+                          <span className="uppercase">FOLGA {seq}</span>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
               </div>
             );
