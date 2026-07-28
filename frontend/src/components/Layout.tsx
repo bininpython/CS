@@ -27,7 +27,7 @@ const Layout: React.FC = () => {
       <aside className="w-56 bg-sidebar flex flex-col fixed top-0 left-0 bottom-0 z-30">
         {/* Logo */}
         <div className="px-5 py-5 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-purple flex items-center justify-center">
+          <div className="w-9 h-9 bg-purple flex items-center justify-center">
             <span className="text-sm font-bold text-white">CS</span>
           </div>
           <div>
@@ -37,17 +37,17 @@ const Layout: React.FC = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 mt-2">
-          <ul className="space-y-1">
+        <nav className="flex-1 mt-2">
+          <ul className="space-y-0">
             {navItems.map((item) => (
               <li key={item.path}>
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    `flex items-center gap-3 px-5 py-3 text-sm transition-colors border-l-3 ${
                       isActive
-                        ? 'bg-purple text-white font-medium'
-                        : 'text-gray-400 hover:bg-sidebarHover hover:text-white'
+                        ? 'border-l-purple bg-sidebarHover text-purple font-medium'
+                        : 'border-l-transparent text-gray-400 hover:bg-sidebarHover hover:text-white'
                     }`
                   }
                 >
@@ -59,14 +59,15 @@ const Layout: React.FC = () => {
           </ul>
         </nav>
 
-        {/* Bottom: Configurações + Supervisor info */}
-        <div className="px-3 pb-3">
-          <button className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-400 hover:bg-sidebarHover hover:text-white transition-colors w-full">
+        {/* Bottom: Configurações */}
+        <div className="border-t border-gray-800">
+          <button className="flex items-center gap-3 px-5 py-3 text-sm text-gray-400 hover:bg-sidebarHover hover:text-white transition-colors w-full border-l-3 border-l-transparent">
             <span className="text-base">⚙️</span>
             <span>Configurações</span>
           </button>
         </div>
 
+        {/* Supervisor info */}
         <div className="px-5 py-4 border-t border-gray-800">
           <p className="text-sm font-medium text-white">{supervisor.emoji} {supervisor.name}</p>
           <p className="text-[11px] text-purple">{supervisor.turn} · {supervisor.timeStart} – {supervisor.timeEnd}</p>
@@ -77,8 +78,7 @@ const Layout: React.FC = () => {
       <div className="flex-1 ml-56">
         {/* Topbar branca */}
         <header className="h-14 bg-white border-b border-border flex items-center justify-between px-6 sticky top-0 z-20">
-          {/* Busca */}
-          <div className="flex items-center gap-2 bg-background rounded-lg px-3 py-2 w-96">
+          <div className="flex items-center gap-2 bg-background px-3 py-2 w-96 border border-border">
             <span className="text-muted text-sm">🔍</span>
             <input
               type="text"
@@ -86,22 +86,20 @@ const Layout: React.FC = () => {
               className="bg-transparent text-sm text-foreground outline-none w-full placeholder-muted"
             />
           </div>
-
-          {/* Direita: info supervisor + trocar */}
           <div className="flex items-center gap-4">
             <span className="text-xs text-muted">
               {supervisor.name} — {supervisor.turn} · {supervisor.timeStart} – {supervisor.timeEnd}
             </span>
             <button
               onClick={handleTrocarPerfil}
-              className="text-xs text-foreground border border-border rounded-lg px-3 py-1.5 hover:bg-background transition-colors font-medium"
+              className="text-xs text-foreground border border-border px-3 py-1.5 hover:bg-background transition-colors font-medium"
             >
               Trocar Perfil
             </button>
           </div>
         </header>
 
-        {/* Content area */}
+        {/* Content */}
         <main className="p-6">
           <Outlet />
         </main>

@@ -18,7 +18,7 @@ const SupervisorSelector: React.FC = () => {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Topbar */}
       <header className="h-14 bg-white border-b border-border flex items-center px-6">
-        <div className="w-8 h-8 rounded-lg bg-purple flex items-center justify-center mr-3">
+        <div className="w-8 h-8 bg-purple flex items-center justify-center mr-3">
           <span className="text-xs font-bold text-white">CS</span>
         </div>
         <span className="text-sm font-semibold text-foreground">Controle Supervisão</span>
@@ -34,7 +34,7 @@ const SupervisorSelector: React.FC = () => {
             <button
               key={sup.id}
               onClick={() => handleSelect(sup.id)}
-              className="bg-white border border-border rounded-xl p-8 flex flex-col items-center gap-3 hover:border-purple hover:shadow-lg hover:shadow-purple/5 transition-all group"
+              className="bg-white border border-border p-8 flex flex-col items-center gap-3 hover:border-purple hover:shadow-md transition-all"
             >
               <span className="text-4xl">{sup.emoji}</span>
               <span className="text-lg font-semibold text-foreground">{sup.name}</span>

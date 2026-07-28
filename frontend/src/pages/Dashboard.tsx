@@ -22,10 +22,10 @@ const Dashboard: React.FC = () => {
           <p className="text-sm text-muted mt-0.5">Visão geral da disponibilidade e distribuição operacional das equipes.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="text-sm text-foreground border border-border rounded-lg px-4 py-2 hover:bg-white transition-colors font-medium">
+          <button className="text-sm text-foreground border border-border px-4 py-2 hover:bg-white transition-colors font-medium">
             🔽 Filtros
           </button>
-          <button className="text-sm text-white bg-purple rounded-lg px-4 py-2 hover:bg-purple/90 transition-colors font-medium">
+          <button className="text-sm text-white bg-purple px-4 py-2 hover:bg-purple/90 transition-colors font-medium">
             + Novo Registro
           </button>
         </div>
@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white border border-border rounded-xl p-5">
+          <div key={card.label} className="bg-white border border-border p-5">
             <div className="flex items-center justify-between mb-3">
               <p className="text-[10px] font-semibold text-muted uppercase tracking-wider">{card.label}</p>
               <span className="text-lg">{card.icon}</span>
@@ -45,9 +45,10 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Atividades Recentes */}
+      {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-white border border-border rounded-xl">
+        {/* Atividades Recentes */}
+        <div className="lg:col-span-2 bg-white border border-border">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Atividades Recentes</h2>
             <button className="text-xs text-purple font-medium hover:underline">Ver todas →</button>
@@ -70,30 +71,30 @@ const Dashboard: React.FC = () => {
           </table>
         </div>
 
-        {/* Resumo lateral */}
-        <div className="bg-white border border-border rounded-xl p-5">
+        {/* Cobertura por Turno */}
+        <div className="bg-white border border-border p-5">
           <h2 className="text-sm font-semibold text-foreground mb-4">Cobertura por Turno</h2>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted">🌙 Turno Noite (TN)</span>
               <span className="text-xs font-medium text-foreground">0 alocados</span>
             </div>
-            <div className="w-full h-2 bg-background rounded-full">
-              <div className="h-2 bg-purple rounded-full" style={{ width: '0%' }}></div>
+            <div className="w-full h-2 bg-background">
+              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted">☀️ Turno Manhã (TM)</span>
               <span className="text-xs font-medium text-foreground">0 alocados</span>
             </div>
-            <div className="w-full h-2 bg-background rounded-full">
-              <div className="h-2 bg-purple rounded-full" style={{ width: '0%' }}></div>
+            <div className="w-full h-2 bg-background">
+              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted">🌅 Turno Tarde (TT)</span>
               <span className="text-xs font-medium text-foreground">0 alocados</span>
             </div>
-            <div className="w-full h-2 bg-background rounded-full">
-              <div className="h-2 bg-purple rounded-full" style={{ width: '0%' }}></div>
+            <div className="w-full h-2 bg-background">
+              <div className="h-2 bg-purple" style={{ width: '0%' }}></div>
             </div>
           </div>
         </div>
