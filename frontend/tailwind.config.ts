@@ -7,13 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#F7F7FA',
+        sidebar: '#0B0B0F',
+        sidebarHover: '#1A1A24',
+        background: '#F3F4F6',
         foreground: '#0B0B0F',
         card: '#FFFFFF',
-        border: '#E4E4E7',
-        muted: '#71717A',
-        accent: '#2563EB',
-        accentLight: '#EFF6FF',
+        border: '#E5E7EB',
+        muted: '#6B7280',
         purple: '#6D28D9',
         purpleDark: '#3B0764',
         purpleLight: '#F3E8FF',
