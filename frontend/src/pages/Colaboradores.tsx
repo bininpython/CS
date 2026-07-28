@@ -47,34 +47,36 @@ const Colaboradores: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative">
-      <div className="flex items-center justify-between mb-8 flex-shrink-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-black uppercase tracking-widest">Colaboradores</h1>
-          <p className="text-sm text-gray-500 mt-1 font-bold uppercase tracking-widest">Gestão de equipe e status</p>
+          <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-widest">Colaboradores</h1>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 font-bold uppercase tracking-widest">Gestão de equipe e status</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white">
+        <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-4 w-full md:w-auto">
+          <div className="relative shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] bg-white w-full sm:w-auto">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black" size={16} />
             <input 
               type="text" 
               placeholder="BUSCAR COLABORADOR..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border-2 border-black pl-10 pr-4 py-3 text-xs font-bold uppercase tracking-widest outline-none focus:bg-gray-50 w-72 text-black placeholder-gray-400"
+              className="border-2 border-black pl-10 pr-4 py-3 text-xs font-bold uppercase tracking-widest outline-none focus:bg-gray-50 w-full sm:w-64 md:w-72 text-black placeholder-gray-400"
             />
           </div>
-          <button className="flex items-center gap-2 text-xs font-bold text-black bg-white border-2 border-black px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <Download size={16} /> Exportar
-          </button>
-          <button className="flex items-center gap-2 text-xs font-bold text-white bg-black border-2 border-black px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <UserPlus size={16} /> Novo
-          </button>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <Download size={16} /> Exportar
+            </button>
+            <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-black border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <UserPlus size={16} /> Novo
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="w-full flex-1 overflow-hidden flex flex-col bg-white">
-        <div className="overflow-y-auto w-full max-h-[calc(100vh-180px)]">
-          <table className="text-sm border-collapse w-full text-center border-2 border-black bg-white">
+        <div className="overflow-x-auto overflow-y-auto w-full max-h-[calc(100vh-180px)] border-2 border-black">
+          <table className="text-xs sm:text-sm border-collapse w-full text-center bg-white min-w-[800px]">
             <thead className="sticky top-0 z-10 bg-gray-50 border-b-2 border-black">
               <tr className="text-black font-bold uppercase tracking-widest text-xs">
                 <th className="px-4 py-4 border-r border-black w-28">Status</th>

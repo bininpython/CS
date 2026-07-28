@@ -321,32 +321,59 @@ const Folgas: React.FC = () => {
       {/* Modal Lançar Folga */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-            <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black bg-white">
+          <div className="bg-white w-full max-w-md border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b-2 border-black bg-white shrink-0">
               <div>
-                <h3 className="text-lg font-bold text-black uppercase tracking-wider">Adicionar Exceção</h3>
-                <p className="text-xs text-gray-500 font-medium">Lançamento manual para {selectedDate.split('-').reverse().join('/')}</p>
+                <h3 className="text-lg font-bold text-black uppercase tracking-wider">Folgas do Dia</h3>
+                <p className="text-xs text-gray-500 font-medium">{selectedDate.split('-').reverse().join('/')}</p>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="text-black hover:bg-gray-100 p-1 transition-colors">
                 <X size={20} />
               </button>
             </div>
             
-            <form onSubmit={handleAddFolga} className="p-6 space-y-6">
+            <div className="overflow-y-auto p-6 space-y-6">
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold uppercase tracking-wider text-black">Colaborador</label>
-                <select 
-                  value={formColaborador}
-                  onChange={(e) => setFormColaborador(e.target.value)}
-                  className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
-                  required
-                >
-                  <option value="">Selecione um colaborador...</option>
-                  {COLABORADORES.map(c => (
-                    <option key={c.id} value={c.id}>{c.nome} ({c.equipamento})</option>
-                  ))}
-                </select>
+                <h4 className="text-xs font-bold text-black uppercase tracking-wider">Equipe de Folga</h4>
+                {selectedDate ? (() => {
+                  const day = Number(selectedDate.split('-')[2]);
+                  const folgasDoDia = getFolgasForDay(day);
+                  if (folgasDoDia.length === 0) {
+                    return <p className="text-sm text-gray-500 italic">Ninguém de folga neste dia.</p>;
+                  }
+                  return (
+                    <div className="flex flex-col gap-2">
+                      {folgasDoDia.map((folga, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-2 border border-gray-200 bg-gray-50">
+                          <div>
+                            <p className="text-xs font-bold text-black uppercase">{folga.nome}</p>
+                            <p className="text-[10px] text-gray-500 uppercase font-bold">{folga.tipo}</p>
+                          </div>
+                          <span className="text-[10px] font-bold bg-white border border-gray-300 px-2 py-1">{folga.equipamento}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })() : null}
               </div>
+
+              <div className="border-t-2 border-black pt-6">
+                <h4 className="text-sm font-bold text-black uppercase tracking-wider mb-4">Adicionar Exceção</h4>
+                <form onSubmit={handleAddFolga} className="space-y-4">
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-black">Colaborador</label>
+                    <select 
+                      value={formColaborador}
+                      onChange={(e) => setFormColaborador(e.target.value)}
+                      className="w-full text-sm border-2 border-black px-3 py-2 outline-none focus:bg-gray-50 font-bold bg-white"
+                      required
+                    >
+                      <option value="">Selecione um colaborador...</option>
+                      {COLABORADORES.map(c => (
+                        <option key={c.id} value={c.id}>{c.nome} ({c.equipamento})</option>
+                      ))}
+                    </select>
+                  </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-black">Tipo de Lançamento</label>
@@ -373,22 +400,24 @@ const Folgas: React.FC = () => {
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-3 border-t-2 border-black mt-6">
-                <button 
-                  type="button" 
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black hover:bg-gray-100 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button 
-                  type="submit"
-                  className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black bg-[#00FF00] hover:bg-[#00cc00] transition-colors"
-                >
-                  Salvar
-                </button>
+                  <div className="pt-2 flex items-center justify-end gap-3 border-t-2 border-black mt-6">
+                    <button 
+                      type="button" 
+                      onClick={() => setIsModalOpen(false)}
+                      className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black hover:bg-gray-100 transition-colors"
+                    >
+                      Cancelar
+                    </button>
+                    <button 
+                      type="submit"
+                      className="px-6 py-2.5 text-sm font-bold uppercase tracking-widest text-black border-2 border-black bg-[#00FF00] hover:bg-[#00cc00] transition-colors"
+                    >
+                      Salvar
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

@@ -16,16 +16,16 @@ const Dashboard: React.FC = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-black uppercase tracking-widest">Dashboard Operacional</h1>
-          <p className="text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Visão geral da disponibilidade das equipes</p>
+          <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-widest">Dashboard Operacional</h1>
+          <p className="text-xs md:text-sm font-bold text-gray-500 uppercase tracking-widest mt-1">Visão geral da disponibilidade das equipes</p>
         </div>
-        <div className="flex items-center gap-4">
-          <button className="flex items-center gap-2 text-xs font-bold text-black bg-white border-2 border-black px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+        <div className="flex items-center gap-2 md:gap-4 w-full md:w-auto">
+          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-black bg-white border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-100 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Filter size={16} /> Filtros
           </button>
-          <button className="flex items-center gap-2 text-xs font-bold text-white bg-black border-2 border-black px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-xs font-bold text-white bg-black border-2 border-black px-3 md:px-5 py-3 hover:bg-gray-800 transition-colors uppercase tracking-widest shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
             <Plus size={16} /> Novo Registro
           </button>
         </div>

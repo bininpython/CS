@@ -182,23 +182,19 @@ const Ferias: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative">
-      <div className="flex items-center justify-between mb-6 flex-shrink-0">
+    <div className="flex flex-col h-full max-w-[100vw] overflow-x-hidden relative p-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-black uppercase tracking-wide">Controle de Férias</h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">Histórico, pontuações e programação - Visão Consolidada</p>
+          <h1 className="text-xl md:text-2xl font-bold text-black uppercase tracking-wide">Controle de Férias</h1>
+          <p className="text-xs md:text-sm text-gray-500 mt-1 font-medium">Histórico, pontuações e programação - Visão Consolidada</p>
         </div>
-        <div className="flex items-center gap-3">
-          <button 
-            onClick={handleNew}
-            className="flex items-center gap-2 text-sm text-white bg-black px-5 py-2.5 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider"
-          >
+        <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
+          <button onClick={handleNew} className="flex-1 md:flex-none flex items-center justify-center gap-2 text-[10px] md:text-sm text-white bg-black px-3 md:px-5 py-2.5 hover:bg-gray-800 transition-colors font-bold uppercase tracking-wider">
             <Plus size={16} /> Novo Colaborador
           </button>
         </div>
       </div>
 
-      {/* Solicitações Pendentes */}
       {solicitacoesFerias.filter(s => s.status === 'Pendente').length > 0 && (
         <div className="mb-8 bg-orange-50 border-2 border-orange-500 p-4 shadow-[4px_4px_0px_0px_rgba(249,115,22,1)]">
           <div className="flex items-center gap-2 mb-4">
@@ -225,7 +221,6 @@ const Ferias: React.FC = () => {
         </div>
       )}
 
-      {/* Abas de Equipamentos - Design Limpo Minimalista */}
       <div className="flex items-center gap-0 mb-6 border-b-2 border-black flex-shrink-0">
         {['RB1', 'LE1', 'RB4'].map((equip) => (
           <button
@@ -242,57 +237,36 @@ const Ferias: React.FC = () => {
         ))}
       </div>
 
-      <div className="w-full flex-1 overflow-hidden flex flex-col bg-white">
-        <div className="overflow-x-auto w-full max-w-full pb-4">
-          <table className="text-xs border-collapse min-w-[1300px] w-full text-center border-2 border-black bg-white">
+      <div className="bg-white border-2 border-black flex-1 flex flex-col min-h-0">
+        <div className="px-6 py-4 border-b-2 border-black flex items-center gap-2 bg-gray-50">
+          <Calendar className="text-black" size={20} />
+          <h2 className="text-lg font-bold text-black uppercase tracking-widest">Tabela de Planejamento</h2>
+        </div>
+        <div className="flex-1 overflow-x-auto overflow-y-auto">
+          <table className="text-xs border-collapse min-w-[1300px] w-full text-center bg-white">
             <thead>
-              {/* ROW 1: Group Headers com linhas fortes */}
               <tr className="border-b-2 border-black bg-gray-50">
-                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
-                  Identificação
-                </th>
-                <th colSpan={6} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
-                  Histórico (Anos)
-                </th>
-                <th colSpan={2} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
-                  Classificação
-                </th>
-                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">
-                  Programação
-                </th>
-                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black">
-                  Status
-                </th>
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">Identificação</th>
+                <th colSpan={6} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">Histórico (Anos)</th>
+                <th colSpan={2} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">Classificação</th>
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black border-r-2 border-black">Programação</th>
+                <th colSpan={3} className="px-2 py-3 font-bold uppercase tracking-widest text-black">Status</th>
               </tr>
-
-              {/* ROW 2: Column Headers */}
               <tr className="border-b-2 border-black bg-white text-black font-bold uppercase">
                 <th className="px-3 py-3 border-r border-black w-24">R3</th>
                 <th className="px-3 py-3 border-r border-black text-left">Empregado</th>
                 <th className="px-3 py-3 border-r-2 border-black w-28">Período Aquis.</th>
-                
-                {/* 2024 */}
                 <th className="px-2 py-3 border-r border-gray-300 w-16">2024</th>
                 <th className="px-2 py-3 border-r border-black w-14">Pts</th>
-                
-                {/* 2025 */}
                 <th className="px-2 py-3 border-r border-gray-300 w-16">2025</th>
                 <th className="px-2 py-3 border-r border-black w-14">Pts</th>
-
-                {/* 2026 */}
                 <th className="px-2 py-3 border-r border-gray-300 w-16">2026</th>
                 <th className="px-2 py-3 border-r-2 border-black w-14">Pts</th>
-
-                {/* Totais */}
                 <th className="px-3 py-3 border-r border-black w-16">Total</th>
                 <th className="px-3 py-3 border-r-2 border-black w-16 bg-gray-100">Prior.</th>
-
-                {/* Opcoes */}
                 <th className="px-2 py-3 border-r border-black w-20">1ª Opção</th>
                 <th className="px-2 py-3 border-r border-black w-20">2ª Opção</th>
                 <th className="px-2 py-3 border-r-2 border-black w-20">3ª Opção</th>
-
-                {/* Complementar */}
                 <th className="px-3 py-3 border-r border-black w-28">Data Prevista</th>
                 <th className="px-3 py-3 border-r border-black text-left">Observações</th>
                 <th className="px-3 py-3 w-12">Editar</th>
