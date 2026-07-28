@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Send, CheckCircle2 } from 'lucide-react';
 import { INITIAL_DATA, MESES } from './Ferias';
 import { supabase } from '../lib/supabase';
+import { useApp } from '../App';
 
 const ColaboradorFerias: React.FC = () => {
   const { solicitacoesFerias, setSolicitacoesFerias, colaboradores } = useApp();
