@@ -205,8 +205,8 @@ const ColaboradorFolgas: React.FC = () => {
                     if (seq > 0) {
                       const colorClass = getSequenceColor(seq);
                       return (
-                        <div className={`text-[10px] md:text-xs px-2 py-2 font-bold border-2 ${colorClass} text-center w-full`}>
-                          <span className="uppercase">FOLGA {seq}</span>
+                        <div className={`text-sm sm:text-base px-2 py-2 font-extrabold border-2 ${colorClass} text-center w-full`}>
+                          <span>{seq}</span>
                         </div>
                       );
                     }
