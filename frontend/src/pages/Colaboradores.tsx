@@ -40,10 +40,12 @@ const INITIAL_DATA: Colaborador[] = [
 import { useApp } from '../App';
 import { supabase } from '../lib/supabase';
 import { exportToPDF } from '../lib/pdfExport';
+import { useLocation } from 'react-router-dom';
 
 const Colaboradores: React.FC = () => {
   const { colaboradores: dados, setColaboradores: setDados } = useApp();
-  const [searchTerm, setSearchTerm] = useState('');
+  const location = useLocation();
+  const [searchTerm, setSearchTerm] = useState(location.state?.search || '');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingColab, setEditingColab] = useState<Colaborador | null>(null);
 
@@ -51,6 +53,14 @@ const Colaboradores: React.FC = () => {
     setEditingColab(colab);
     setIsEditModalOpen(true);
   };
+
+  React.useEffect(() => {
+    if (location.state?.search) {
+      setSearchTerm(location.state.search);
+      // clean state after reading it
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();

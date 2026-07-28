@@ -12,8 +12,25 @@ const navItems = [
 ];
 
 const Layout: React.FC = () => {
-  const { supervisor, setSupervisor, setRole } = useApp();
+  const { supervisor, setSupervisor, setRole, colaboradores } = useApp();
   const navigate = useNavigate();
+  const [globalSearch, setGlobalSearch] = React.useState('');
+  const [showSearchDropdown, setShowSearchDropdown] = React.useState(false);
+
+  // Filter for global search
+  const searchResults = React.useMemo(() => {
+    if (!globalSearch.trim()) return [];
+    return colaboradores.filter(c => 
+      c.nome.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      c.registro.includes(globalSearch)
+    ).slice(0, 5); // Limit to 5 results
+  }, [globalSearch, colaboradores]);
+
+  const handleSelectResult = (nome: string) => {
+    setGlobalSearch('');
+    setShowSearchDropdown(false);
+    navigate('/colaboradores', { state: { search: nome } });
+  };
 
   if (!supervisor) return null;
 
@@ -70,10 +87,17 @@ const Layout: React.FC = () => {
         {/* Supervisor info & Configurações */}
         <div className="mt-auto flex flex-col">
           <div className="border-t-2 border-black">
-            <button className="flex items-center gap-4 px-6 py-4 text-xs font-bold uppercase tracking-widest text-black bg-white hover:bg-gray-100 transition-colors w-full border-b-2 border-black">
+            <NavLink 
+              to="/configuracoes"
+              className={({ isActive }) => 
+                `flex items-center gap-4 px-6 py-4 text-xs font-bold uppercase tracking-widest transition-colors w-full border-b-2 border-black ${
+                  isActive ? 'bg-black text-white' : 'bg-white text-black hover:bg-gray-100'
+                }`
+              }
+            >
               <Settings size={18} className="shrink-0" />
               <span>Configurações</span>
-            </button>
+            </NavLink>
           </div>
           <div className="px-6 py-5 bg-white">
             <p className="text-sm font-bold text-black uppercase tracking-widest truncate">
@@ -111,13 +135,43 @@ const Layout: React.FC = () => {
       <div className="flex-1 md:ml-64 flex flex-col min-w-0 w-full overflow-hidden">
         {/* Topbar Brutalista */}
         <header className="h-16 bg-white border-b-2 border-black flex items-center justify-between px-4 sticky top-0 z-20 shrink-0 w-full gap-2">
-          <div className="flex-1 max-w-[250px] flex items-center gap-2 bg-white px-2 py-1.5 md:px-3 md:py-2 border-2 border-black focus-within:bg-gray-50 transition-colors">
-            <Search size={16} className="text-black shrink-0 hidden sm:block" />
-            <input
-              type="text"
-              placeholder="BUSCAR..."
-              className="bg-transparent text-[10px] md:text-xs font-bold uppercase tracking-widest text-black outline-none w-full placeholder-gray-400"
-            />
+          <div className="flex-1 max-w-[350px] relative">
+            <div className="flex items-center gap-2 bg-white px-2 py-1.5 md:px-3 md:py-2 border-2 border-black focus-within:bg-gray-50 transition-colors">
+              <Search size={16} className="text-black shrink-0 hidden sm:block" />
+              <input
+                type="text"
+                placeholder="BUSCAR COLABORADOR..."
+                value={globalSearch}
+                onChange={(e) => {
+                  setGlobalSearch(e.target.value);
+                  setShowSearchDropdown(true);
+                }}
+                onFocus={() => setShowSearchDropdown(true)}
+                onBlur={() => setTimeout(() => setShowSearchDropdown(false), 200)}
+                className="bg-transparent text-[10px] md:text-xs font-bold uppercase tracking-widest text-black outline-none w-full placeholder-gray-400"
+              />
+            </div>
+            
+            {showSearchDropdown && globalSearch.trim().length > 0 && (
+              <div className="absolute top-full left-0 mt-1 w-full bg-white border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-50 max-h-60 overflow-y-auto custom-scrollbar">
+                {searchResults.length > 0 ? (
+                  searchResults.map(colab => (
+                    <div 
+                      key={colab.id} 
+                      onClick={() => handleSelectResult(colab.nome)}
+                      className="p-3 border-b-2 border-black last:border-b-0 hover:bg-gray-100 cursor-pointer flex flex-col"
+                    >
+                      <span className="text-xs font-bold text-black uppercase tracking-widest">{colab.nome}</span>
+                      <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{colab.equipamento} - Reg: {colab.registro}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-3 text-xs text-gray-500 font-bold uppercase tracking-widest text-center">
+                    Nenhum colaborador encontrado
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           <div className="flex items-center gap-2 md:gap-4 shrink-0">

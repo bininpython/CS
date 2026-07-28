@@ -6,6 +6,7 @@ import ColaboradoresTab from './pages/Colaboradores';
 import PostosDeTrabalho from './pages/PostosDeTrabalho';
 import Ferias from './pages/Ferias';
 import Folgas from './pages/Folgas';
+import Configuracoes from './pages/Configuracoes';
 import Layout from './components/Layout';
 import { supabase } from './lib/supabase';
 
@@ -209,6 +210,7 @@ const App: React.FC = () => {
             <Route path="/postos-de-trabalho" element={<PostosDeTrabalho />} />
             <Route path="/ferias" element={<Ferias />} />
             <Route path="/folgas" element={<Folgas />} />
+            <Route path="/configuracoes" element={<Configuracoes />} />
           </Route>
         ) : null}
 
