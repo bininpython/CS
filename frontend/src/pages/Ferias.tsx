@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock } from 'lucide-react';
+import { Download, Edit2, Plus, X, Save, CheckCircle2, Clock, Calendar } from 'lucide-react';
 import { useApp } from '../App';
 
 interface HistoricoAno {
