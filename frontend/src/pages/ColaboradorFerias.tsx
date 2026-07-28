@@ -53,7 +53,7 @@ const ColaboradorFerias: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'RB1' | 'LE1' | 'RB4'>('RB1');
 
   // Simplificando o cálculo para a view de colaborador
-  const colaboradores = INITIAL_DATA.filter(emp => emp.equipe === activeTab).sort((a, b) => {
+  const colaboradoresCalculados = INITIAL_DATA.filter(emp => emp.equipe === activeTab).sort((a, b) => {
     const totalA = a.hist2024.pontos + a.hist2025.pontos + a.hist2026.pontos;
     const totalB = b.hist2024.pontos + b.hist2025.pontos + b.hist2026.pontos;
     return totalB - totalA;
@@ -166,7 +166,7 @@ const ColaboradorFerias: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {colaboradores.map((emp, i) => (
+              {colaboradoresCalculados.map((emp, i) => (
                 <tr key={emp.id} className="border-b border-gray-200 hover:bg-gray-50">
                   <td className="px-3 py-3 border-r-2 border-black text-left font-bold">{emp.nome}</td>
                   <td className="px-3 py-3 border-r-2 border-black font-bold text-base bg-black text-white">{i + 1}º</td>
