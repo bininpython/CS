@@ -114,55 +114,58 @@ const ColaboradorFolgas: React.FC = () => {
         )}
       </div>
 
-      {/* Calendário de Visualização */}
-      <div className="bg-white border-2 border-black flex flex-col overflow-hidden shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]">
-        <div className="px-6 py-4 border-b-2 border-black bg-black">
-          <h2 className="text-xl font-bold text-white uppercase tracking-widest">Calendário de Escala 6x2</h2>
-          <p className="text-xs font-bold text-gray-300 uppercase tracking-widest mt-1">Ano de {YEAR}</p>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6 flex-shrink-0">
+        <div>
+          <h1 className="text-2xl font-bold text-black uppercase tracking-wide">Programação de Folgas</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Calendário dinâmico inteligente (Escala 6x2) - Ano {YEAR}</p>
         </div>
+      </div>
 
-        {/* Legenda das Folgas */}
-        <div className="flex items-center flex-wrap gap-4 p-4 border-b-2 border-black bg-white">
-          <span className="text-xs font-bold uppercase tracking-widest text-black mr-2">Legenda:</span>
-          {[1, 2, 3, 4].map(seq => (
-            <div key={seq} className="flex items-center gap-2">
-              <div className={`w-4 h-4 border-2 ${getSequenceColor(seq)}`}></div>
-              <span className="text-xs font-bold uppercase text-black">Folga {seq}</span>
-            </div>
-          ))}
-        </div>
+      {/* Legenda das Folgas */}
+      <div className="flex items-center gap-6 mb-4 flex-shrink-0 bg-white p-3 border-2 border-black">
+        <span className="text-sm font-bold uppercase tracking-widest text-black mr-2">Legenda de Cores:</span>
+        {[1, 2, 3, 4].map(seq => (
+          <div key={seq} className="flex items-center gap-2">
+            <div className={`w-4 h-4 border ${getSequenceColor(seq)}`}></div>
+            <span className="text-xs font-bold uppercase text-gray-700">Folga {seq}</span>
+          </div>
+        ))}
+      </div>
 
-        {/* Month selector tabs */}
-        <div className="flex items-center overflow-x-auto border-b-2 border-black bg-gray-50 hide-scrollbar">
-          {MONTH_NAMES.map((name, idx) => (
-            <button
-              key={idx}
-              onClick={() => setSelectedMonth(idx)}
-              className={`px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-r-2 border-black flex-shrink-0 ${
-                selectedMonth === idx
-                  ? 'bg-black text-white'
-                  : 'bg-transparent text-black hover:bg-gray-200'
-              }`}
-            >
-              {name}
-            </button>
-          ))}
-        </div>
+      {/* Month selector tabs */}
+      <div className="flex items-center gap-0 mb-4 border-b-2 border-black flex-shrink-0 overflow-x-auto">
+        {MONTH_NAMES.map((name, idx) => (
+          <button
+            key={idx}
+            onClick={() => setSelectedMonth(idx)}
+            className={`px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors border-x border-t border-transparent ${
+              selectedMonth === idx
+                ? 'bg-black text-white border-black'
+                : 'bg-white text-black hover:bg-gray-100 hover:border-gray-200'
+            }`}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
 
+      {/* Calendar Grid */}
+      <div className="bg-white border-2 border-black flex-1 flex flex-col overflow-hidden">
         {/* Days of week header */}
-        <div className="grid grid-cols-7 border-b-2 border-black bg-gray-100 flex-shrink-0">
+        <div className="grid grid-cols-7 border-b-2 border-black bg-gray-50 flex-shrink-0">
           {WEEK_DAYS.map((day) => (
-            <div key={day} className="px-1 py-2 text-center text-[10px] sm:text-xs font-bold text-black uppercase tracking-widest border-r-2 border-black last:border-r-0">
+            <div key={day} className="px-2 py-3 text-center text-xs font-bold text-black uppercase tracking-widest border-r border-black last:border-0">
               {day}
             </div>
           ))}
         </div>
 
         {/* Days grid */}
-        <div className="grid grid-cols-7 overflow-y-auto bg-gray-50 max-h-[600px]">
+        <div className="grid grid-cols-7 flex-1 overflow-y-auto bg-gray-100">
           {/* Empty cells for offset */}
           {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-            <div key={`empty-${i}`} className="min-h-[100px] border-b-2 border-r-2 border-black bg-gray-200 opacity-50 pointer-events-none"></div>
+            <div key={`empty-${i}`} className="min-h-[120px] border-b border-r border-gray-300 bg-gray-200/50 opacity-50 pointer-events-none"></div>
           ))}
 
           {/* Actual days */}
@@ -175,27 +178,28 @@ const ColaboradorFolgas: React.FC = () => {
             return (
               <div 
                 key={day} 
-                className={`min-h-[100px] border-b-2 border-r-2 border-black p-1 sm:p-2 hover:bg-yellow-50 transition-colors flex flex-col ${isToday ? 'bg-purple/10' : 'bg-white'}`}
+                className={`min-h-[120px] border-b border-r border-gray-300 bg-white p-2 hover:bg-gray-50 transition-colors flex flex-col ${isToday ? 'bg-purple/5' : ''}`}
               >
-                <div className="flex justify-between items-start mb-1">
-                  <span className={`text-xs font-bold flex items-center justify-center w-5 h-5 rounded-none border-2 border-black ${
-                    isSunday ? 'bg-red-100 text-red-600' : 'bg-white text-black'
-                  } ${isToday ? '!bg-black !text-white' : ''}`}>
+                <div className="flex justify-between items-start mb-2">
+                  <span className={`text-sm font-bold flex items-center justify-center w-6 h-6 rounded-full ${
+                    isSunday ? 'text-red-600' : 'text-black'
+                  } ${isToday ? 'bg-black text-white' : ''}`}>
                     {day}
                   </span>
                 </div>
                 
                 {/* Folgas Chips */}
-                <div className="flex flex-col gap-1 overflow-y-auto max-h-[70px] hide-scrollbar">
+                <div className="flex flex-col gap-1 overflow-y-auto max-h-[80px] pr-1 custom-scrollbar">
                   {folgas.map((folga, idx) => {
                     const colorClass = getSequenceColor(folga.numeroFolga);
                     return (
                       <div 
                         key={idx} 
                         title={`${folga.tipo} - ${folga.nome}`}
-                        className={`text-[8px] sm:text-[9px] px-1 py-0.5 font-bold truncate flex items-center justify-between border-2 ${colorClass}`}
+                        className={`text-[9px] px-1.5 py-1 font-bold truncate flex items-center justify-between border ${colorClass}`}
                       >
                         <span className="truncate uppercase">{folga.nome.split(' ')[0]} {folga.nome.split(' ')[1]}</span>
+                        <span className="text-[8px] opacity-80 ml-1 bg-white/50 px-1 rounded-sm">{folga.equipamento}</span>
                       </div>
                     );
                   })}
